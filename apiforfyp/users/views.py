@@ -39,7 +39,8 @@ class UserRegistrationView(APIView):
             data = request.data
             serializer = UserSerializer(data=data)
             if serializer.is_valid():
-                serializer.save()
+                user = serializer.save()
+                user.set_password(serializer.validated_data["password"])
                 send_otp(serializer.data["email"])
                 return Response(
                     {
@@ -69,23 +70,23 @@ class UserRegistrationView(APIView):
             )
 
 
-@csrf_exempt
-class LoginView(APIView):
-    authentication_classes = [TokenAuthentication]
+# @csrf_exempt
+# class LoginView(APIView):
+#     authentication_classes = [TokenAuthentication]
 
-    @api_view(["POST"])
-    def post(self, request):
-        user = authenticate(
-            username=request.data["username"], password=request.data["password"]
-        )
+#     @api_view(["POST"])
+#     def post(self, request):
+#         user = authenticate(
+#             username=request.data["username"], password=request.data["password"]
+#         )
 
-        if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key})
-        else:
-            return Response(
-                {"error": "Wrong Credentials"}, status=status.HTTP_404_NOT_FOUND
-            )
+#         if user:
+#             token, created = Token.objects.get_or_create(user=user)
+#             return Response({"token": token.key})
+#         else:
+#             return Response(
+#                 {"error": "Wrong Credentials"}, status=status.HTTP_404_NOT_FOUND
+#             )
 
 
 class VerifyOTPAPI(APIView):
