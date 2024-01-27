@@ -3,8 +3,6 @@ from .models import CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-
     class Meta:
         model = CustomUser
         fields = (
@@ -15,4 +13,22 @@ class UserSerializer(serializers.ModelSerializer):
             "password",
             "fitness_level",
             "fitness_goal",
+            "is_verified",
         )
+
+
+class OTPVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    otp = serializers.CharField()
+
+    class Meta:
+        model = CustomUser
+        fields = ("email", "otp")
+
+
+class ResendOTPSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = CustomUser
+        fields = ("email",)
