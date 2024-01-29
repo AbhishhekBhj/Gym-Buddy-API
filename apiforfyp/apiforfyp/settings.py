@@ -35,6 +35,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "rest_framework",
+    "rest_framework_simplejwt",
     "rest_framework.authtoken",
     "apiforfyp",
     "food",
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "reminders",
     "exercise",
     "waterintake",
+    "logworkout",
     "caloricintake",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -100,8 +102,12 @@ WSGI_APPLICATION = "apiforfyp.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "myfypdb",
+        "USER": "root",
+        "PASSWORD": "Abhishek1656@##",
+        "PORT": "3306",
+        "HOST": "127.0.0.1",
     }
 }
 

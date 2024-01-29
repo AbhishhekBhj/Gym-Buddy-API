@@ -1,19 +1,19 @@
-from django.shortcuts import render
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
-from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authentication import TokenAuthentication
 from rest_framework import status
 from django.contrib.auth import authenticate
-from rest_framework import generics, permissions
-from .serializers import ResendOTPSerializer, UserSerializer, OTPVerificationSerializer
-from rest_framework.decorators import api_view
+from .serializers import (
+    ResendOTPSerializer,
+    UserSerializer,
+    OTPVerificationSerializer,
+    LoginSerializer,
+)
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .email import *
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.hashers import make_password
+from .models import CustomUser
 
 # Create your views here.
 
@@ -41,7 +41,9 @@ class UserRegistrationView(APIView):
             if serializer.is_valid():
                 user = serializer.save()
                 user.set_password(serializer.validated_data["password"])
+                user.save()
                 send_otp(serializer.data["email"])
+
                 return Response(
                     {
                         "status": 200,
@@ -152,6 +154,64 @@ class ResendOTPView(APIView):
                         "data": serializer.data,
                     }
                 )
+        except Exception as e:
+            print(e)
+            return Response(
+                {
+                    "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                }
+            )
+
+
+class LoginAPIView(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            serializer = LoginSerializer(data=data)
+            if serializer.is_valid():
+                username = serializer.data["username"]
+                password = serializer.data["password"]
+                authenticated_user = authenticate(username=username, password=password)
+
+                if authenticated_user is None:
+                    return Response(
+                        {
+                            "status": status.HTTP_400_BAD_REQUEST,
+                            "message": "invalid credentials",
+                            "data": {},
+                        }
+                    )
+
+                if authenticated_user.is_verified == False:
+                    return Response(
+                        {
+                            "status": status.HTTP_400_BAD_REQUEST,
+                            "message": "Please verify your email first with the otp",
+                            "data": {},
+                        }
+                    )
+
+                refresh_token = RefreshToken.for_user(authenticated_user)
+
+                return Response(
+                    {
+                        "status": status.HTTP_200_OK,
+                        "message": "Login Successful",
+                        "refresh_token": str(refresh_token),
+                        "access_token": str(refresh_token.access_token),
+                    }
+                )
+
+            return Response(
+                {
+                    "status": 400,
+                    "message": "Invalid Input",
+                    "data": serializer.errors,
+                }
+            )
+
         except Exception as e:
             print(e)
             return Response(

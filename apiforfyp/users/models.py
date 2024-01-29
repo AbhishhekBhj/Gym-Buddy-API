@@ -8,7 +8,11 @@ from .manager import CustomUserManager
 
 # Create your models here.
 class CustomUser(AbstractUser):
-    username = models.CharField(max_length=100, primary_key=True)
+    id = models.AutoField(
+        primary_key=True,
+        blank=False,
+    )
+    username = models.CharField(max_length=100, blank=False, unique=True)
     name = models.CharField(max_length=100, blank=False)
     age = models.IntegerField(default=0, blank=False)
     email = models.EmailField(max_length=100, blank=False, unique=True)
@@ -21,8 +25,9 @@ class CustomUser(AbstractUser):
     last_login = models.DateTimeField(auto_now=True, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     otp = models.CharField(max_length=6, blank=True, null=True)
+    is_pro_member = models.BooleanField(default=False)
 
     objects = CustomUserManager()
-    
-    def __str__(self) :
+
+    def __str__(self):
         return self.name

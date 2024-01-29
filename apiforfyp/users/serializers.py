@@ -32,3 +32,12 @@ class ResendOTPSerializer(serializers.Serializer):
     class Meta:
         model = CustomUser
         fields = ("email",)
+
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    class Meta:
+        model = CustomUser
+        fields = ("username", "password")

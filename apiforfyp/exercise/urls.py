@@ -1,11 +1,16 @@
 from django.urls import path
-from exercise.views import ExerciseView
+from exercise.views import ExerciseView, ExerciseTypeView, TargetBodyPartView
 
 urlpatterns = [
-    path("getexercise/", ExerciseView.exercise_list, name="exercise_list"),
+    path("exercise/", ExerciseView.exercise_list, name="exercise_list"),
     path(
-        "getexercisebodypart/",
-        ExerciseView.exercise_body_part_list,
+        "exercisebodypart/",
+        TargetBodyPartView.as_view(),
         name="exercise_body_part_list",
+    ),
+    path(
+        "exercisetype/",
+        ExerciseTypeView.as_view(),
+        name="exercise_type_list",
     ),
 ]
