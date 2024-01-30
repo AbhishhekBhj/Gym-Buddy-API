@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,login
 from .serializers import (
     ResendOTPSerializer,
     UserSerializer,
@@ -194,7 +194,7 @@ class LoginAPIView(APIView):
                     )
 
                 refresh_token = RefreshToken.for_user(authenticated_user)
-
+                login(request,authenticated_user)
                 return Response(
                     {
                         "status": status.HTTP_200_OK,

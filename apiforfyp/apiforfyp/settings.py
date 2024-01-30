@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,9 +35,12 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "channels",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
+    "customadmin",
     "apiforfyp",
     "food",
     "users",
@@ -45,6 +49,7 @@ INSTALLED_APPS = [
     "exercise",
     "waterintake",
     "logworkout",
+    "logmeasurements",
     "caloricintake",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -53,6 +58,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
+
+ASGI_APPLICATION = "apiforfyp.asgi.application"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -164,6 +171,11 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 100,
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
 # load envrionment variable from .env file
