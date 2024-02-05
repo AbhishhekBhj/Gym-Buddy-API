@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from django.contrib.auth import authenticate,login
+from django.contrib.auth import authenticate, login
 from .serializers import (
     ResendOTPSerializer,
     UserSerializer,
@@ -194,11 +194,22 @@ class LoginAPIView(APIView):
                     )
 
                 refresh_token = RefreshToken.for_user(authenticated_user)
-                login(request,authenticated_user)
+                login(request, authenticated_user)
                 return Response(
                     {
                         "status": status.HTTP_200_OK,
                         "message": "Login Successful",
+                        "data": {
+                            "user_id": authenticated_user.id,
+                            "name": authenticated_user.name,
+                            "username": authenticated_user.username,
+                            "age": authenticated_user.age,
+                            "email": authenticated_user.email,
+                            "fitness_level": authenticated_user.fitness_level,
+                            "is_pro_member": authenticated_user.is_pro_member,
+                            "fitness_goal": authenticated_user.fitness_goal,
+                            "profile_picture": str(authenticated_user.profile_picture),
+                        },
                         "refresh_token": str(refresh_token),
                         "access_token": str(refresh_token.access_token),
                     }

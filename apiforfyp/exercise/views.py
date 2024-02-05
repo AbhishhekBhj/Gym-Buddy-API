@@ -2,28 +2,29 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializers import ExerciseSerializer, ExerciseTypeSerializer, TargetBodyPartSerializer
-from .models import Exercise, TargetBodyPart,ExerciseType
+from .serializers import (
+    ExerciseSerializer,
+    ExerciseTypeSerializer,
+    TargetBodyPartSerializer,
+)
+from .models import Exercise, TargetBodyPart, ExerciseType
 from rest_framework.views import APIView
 
 # Create your views here.
 
 
-class ExerciseView:
-    @api_view(["GET", "POST"])
-    def exercise_list(request, format=None):
-        if request.method == "GET":
-            exercise = Exercise.objects.all()
-            serializer = ExerciseSerializer(exercise, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+class ExerciseView(APIView):
+    def get( request, format=None):
+        exercise = Exercise.objects.all()
+        serializer = ExerciseSerializer(exercise, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        elif request.method == "POST":
-            serializer = ExerciseSerializer(data=request.data, many=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+    def post( request, format=None):
+        serializer = ExerciseSerializer(data=request.data, many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # @api_view(["GET", "PUT"])
     # def exercise_body_part_list(request):
@@ -38,12 +39,11 @@ class ExerciseView:
     #         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
 class TargetBodyPartView(APIView):
     def post(self, request):
         try:
             data = request.data
-            serializer = TargetBodyPartSerializer(data=data,many=True)
+            serializer = TargetBodyPartSerializer(data=data, many=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
@@ -69,7 +69,7 @@ class TargetBodyPartView(APIView):
                     "data": str(e),
                 }
             )
-            
+
     def get(self, request):
         try:
             target_body_part = TargetBodyPart.objects.all()
@@ -92,10 +92,10 @@ class TargetBodyPartView(APIView):
 
 
 class ExerciseTypeView(APIView):
-    def post(self,request):
+    def post(self, request):
         try:
             data = request.data
-            serializer = ExerciseTypeSerializer(data=data,many=True)
+            serializer = ExerciseTypeSerializer(data=data, many=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
@@ -120,7 +120,7 @@ class ExerciseTypeView(APIView):
                     "data": str(e),
                 }
             )
-            
+
     def get(self, request):
         try:
             exercise_type = ExerciseType.objects.all()
@@ -139,5 +139,4 @@ class ExerciseTypeView(APIView):
                     "message": "Internal Server Error",
                     "data": str(e),
                 }
-            )            
-
+            )

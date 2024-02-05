@@ -40,9 +40,10 @@ class RemindersSetAPIView(APIView):
 
 
 class RemindersGetAPIView(APIView):
-    def get(self, request):
+    def get(self, request,user):
+        user = request.user
         try:
-            reminders = Reminder.objects.all()
+            reminders = Reminder.objects.filter(user=user).all()
             serializer = ReminderSerializer(reminders, many=True)
             return Response(
                 {

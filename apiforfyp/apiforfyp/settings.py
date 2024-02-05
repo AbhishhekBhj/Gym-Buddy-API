@@ -35,8 +35,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "daphne",
-    "channels",
+    # "daphne",
+    # "channels",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
-ASGI_APPLICATION = "apiforfyp.asgi.application"
+ALLOWED_HOSTS = ["10.0.2.2", "127.0.0.1"]
+
+# ASGI_APPLICATION = "apiforfyp.asgi.application"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -174,8 +176,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=50),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
 }
 
 # load envrionment variable from .env file

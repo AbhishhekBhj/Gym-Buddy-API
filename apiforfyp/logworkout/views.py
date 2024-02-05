@@ -38,27 +38,31 @@ class WorkoutView(APIView):
 
 
 class WorkoutGetView(APIView):
-    def get(self, request):
+    def get(self, request, user):
         try:
             # get the user from request
             user = request.user
             current_time = timezone.now()
 
             # check if user is a pro member
-
             if user.is_pro_member:
                 # if pro send all data
-                queryset = Workout.objects.all()
-
+                queryset = Workout.objects.filter(username_id=user).all()
             else:
-                # if not pro member get data from last 15 days
+                # if not pro member get data from the last 15 days
+                fifteen_days_ago = current_time - datetime.timedelta(days=15)
+                queryset = Workout.objects.filter(created_at__gte=fifteen_days_ago)
 
-                fiteen_days_ago = current_time - datetime.timedelta(days=15)
-                queryset = Workout.objects.filter(date__gte=fiteen_days_ago)
             serializer = WorkoutSerializer(queryset, many=True)
             return Response(
-                {"status": 200, "message": "Workout data", "data": serializer.data}
+                {
+                    "status": 200,
+                    "message": "Workout data",
+                    "data": serializer.data,
+                }
             )
-
-        except:
-            return Response({"status": 500, "message": "Internal Server Error"})
+        except Exception as e:
+            # Handle exceptions more explicitly for debugging purposes
+            return Response(
+                {"status": 500, "message": "Internal Server Error", "error": str(e)}
+            )
