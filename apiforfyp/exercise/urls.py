@@ -13,4 +13,6 @@ urlpatterns = [
         ExerciseTypeView.as_view(),
         name="exercise_type_list",
     ),
+    
+    path("post/", ExerciseView.post, name="exercise_post"),
 ]

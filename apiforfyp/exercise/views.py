@@ -14,12 +14,12 @@ from rest_framework.views import APIView
 
 
 class ExerciseView(APIView):
-    def get( request, format=None):
+    def get(request, format=None):
         exercise = Exercise.objects.all()
         serializer = ExerciseSerializer(exercise, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post( request, format=None):
+    def post(request, format=None):
         serializer = ExerciseSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()

@@ -25,6 +25,7 @@ class Exercise(models.Model):
     )
     target_body_part = models.ManyToManyField(TargetBodyPart)
     type = models.ForeignKey(ExerciseType, on_delete=models.CASCADE, default=1)
+    calories_burned_per_hour = models.IntegerField(blank=False,default=100)
 
     def __str__(self):
         return self.exercise_name
