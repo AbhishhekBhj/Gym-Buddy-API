@@ -12,27 +12,60 @@ from users.models import CustomUser
 class BodyMeasurementListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        user = self.request.user
-        is_pro_member = CustomUser.objects.get(user=user).is_pro_member
-        if is_pro_member:
-            queryset = BodyMeasurement.objects.filter(user=user)
-        else:
-            # Show measurements of the last 15 days
-            queryset = BodyMeasurement.objects.filter(
-                user=user, created_at__gte=timezone.now() - timedelta(days=15)
-            )
+    # def get(self, request, format=None):
+    #     user = self.request.user
+    #     is_pro_member = CustomUser.objects.get(user=user).is_pro_member
+    #     if is_pro_member:
+    #         queryset = BodyMeasurement.objects.filter(user=user)
+    #     else:
+    #         # Show measurements of the last 15 days
+    #         queryset = BodyMeasurement.objects.filter(
+    #             user=user, created_at__gte=timezone.now() - timedelta(days=15)
+    #         )
 
-        serializer = LogMeasurementsSerializer(queryset, many=True)
-        return Response(serializer.data)
+    #     serializer = LogMeasurementsSerializer(queryset, many=True)
+    #     return Response(serializer.data)
+
+    def get(self, request, user):
+        user = request.user
+        try:
+            measurement = BodyMeasurement.objects.filter(user=user).all()
+            serializer = LogMeasurementsSerializer(measurement, many=True)
+            return Response(
+                {
+                    "message": "Reminders fetched successfully",
+                    "data": serializer.data,
+                    "status": status.HTTP_200_OK,
+                }
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "message": "Reminders not fetched",
+                    "data": str(e),
+                    "status": status.HTTP_400_BAD_REQUEST,
+                }
+            )
 
     def post(self, request, format=None):
         serializer = LogMeasurementsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(user=request.user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                {
+                    "status": status.HTTP_201_CREATED,
+                    "message": "Measurement added successfully",
+                    "data": serializer.data,
+                }
+            )
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Measurement could not be added",
+                "data": serializer.errors,
+            }
+        )
 
 
 class BodyMeasurementDetailView(APIView):

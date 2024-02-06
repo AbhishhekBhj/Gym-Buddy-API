@@ -13,6 +13,9 @@ class CustomUser(AbstractUser):
         blank=False,
     )
     username = models.CharField(max_length=100, blank=False, unique=True)
+    height = models.FloatField(default=0, blank=False)
+    weight = models.FloatField(default=0, blank=False)
+    gender = models.CharField(max_length=100, blank=False, default="Male")
     name = models.CharField(max_length=100, blank=False)
     age = models.IntegerField(default=0, blank=False)
     email = models.EmailField(max_length=100, blank=False, unique=True)

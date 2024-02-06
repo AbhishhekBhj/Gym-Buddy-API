@@ -209,6 +209,9 @@ class LoginAPIView(APIView):
                             "is_pro_member": authenticated_user.is_pro_member,
                             "fitness_goal": authenticated_user.fitness_goal,
                             "profile_picture": str(authenticated_user.profile_picture),
+                            "weight": authenticated_user.weight,
+                            "height": authenticated_user.height,
+                            "gender": authenticated_user.gender,
                         },
                         "refresh_token": str(refresh_token),
                         "access_token": str(refresh_token.access_token),
@@ -232,3 +235,7 @@ class LoginAPIView(APIView):
                     "data": str(e),
                 }
             )
+
+
+class EditProfileDetails(APIView):
+    pass

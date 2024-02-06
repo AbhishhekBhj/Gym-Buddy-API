@@ -14,6 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
             "fitness_level",
             "fitness_goal",
             "is_verified",
+            "height",
+            "weight",
         )
 
 

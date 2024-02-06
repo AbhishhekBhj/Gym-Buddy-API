@@ -9,6 +9,8 @@ from .serializers import (
 )
 from .models import Exercise, TargetBodyPart, ExerciseType
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+
 
 # Create your views here.
 
@@ -19,7 +21,10 @@ class ExerciseView(APIView):
         serializer = ExerciseSerializer(exercise, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def post(request, format=None):
+
+#remove in production
+    @api_view(["POST"])
+    def post(request):
         serializer = ExerciseSerializer(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
