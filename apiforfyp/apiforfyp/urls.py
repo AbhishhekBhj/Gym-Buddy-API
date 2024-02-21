@@ -22,6 +22,8 @@ from django.conf.urls.static import static
 from rest_framework_simplejwt import views as jwt_views
 from .views import HomePageAPIView, PasswordCheckAPIView, ChangePasswordAPIView
 
+from externalfunctions.maintance_calories import UserRelatedFunction
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/password/post/<str:user>/", view=PasswordCheckAPIView.as_view()),
@@ -41,6 +43,10 @@ urlpatterns = [
     ),
     path(
         "api/token/refresh/", jwt_views.TokenRefreshView.as_view(), name="token_refresh"
+    ),
+    path(
+        "api/calculate_maintance_calories/",
+        view=UserRelatedFunction.calculate_maintance_calories,
     ),
 ]
 
