@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     "customadmin",
     "apiforfyp",
+    "workoutroutine",
     "food",
     "users",
     "meditationintake",

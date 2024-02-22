@@ -23,6 +23,7 @@ class FoodView:
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @api_view(["PUT", "DELETE", "PATCH"])
     def food_list_edit(request, pk, Format=None):
@@ -56,19 +57,17 @@ class FoodView:
         try:
             food_details = Food.objects.filter(food_name__icontains=food_name)
 
-            # pagination to decrease response time and size
-            paginator = PageNumberPagination()
-            paginator.page_size = 10
-            result_page = paginator.paginate_queryset(food_details, request)
-
-            serializer = FoodSerializer(result_page, many=True)
-
-            print(serializer.data)
+            serializer = FoodSerializer(food_details, many=True)
 
             if len(serializer.data) == 0:
-                return paginator.get_paginated_response(serializer.data)
+                return Response(
+                    {
+                        "message": "No food found with the given name",
+                        "status": status.HTTP_404_NOT_FOUND,
+                    }
+                )
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"status": 200, "data": serializer.data, "message": "success"})
 
         except Food.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)

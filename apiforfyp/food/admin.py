@@ -6,6 +6,9 @@ from logworkout.models import *
 from waterintake.models import *
 from meditationintake.models import *
 from reminders.models import *
+from caloricintake.models import *
+from logmeasurements.models import *
+from workoutroutine.models import *
 
 # Register your models here.
 
@@ -18,3 +21,6 @@ admin.site.register(Workout)
 admin.site.register(Meditation)
 admin.site.register(WaterIntake)
 admin.site.register(Reminder)
+admin.site.register(CaloricIntake)
+admin.site.register(BodyMeasurement)
+admin.site.register(WorkoutRoutine)

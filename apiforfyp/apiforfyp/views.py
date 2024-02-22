@@ -8,11 +8,14 @@ from reminders.views import RemindersGetAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password
 from logmeasurements.views import BodyMeasurementListCreateView
+from caloricintake.views import  CaloricIntakeGetView
 
 
 class HomePageAPIView(APIView):
     def get(self, request, user):
         # Instantiate the ExerciseView and call its get method
+        
+        
         exercise_view = ExerciseView()
         exercise_data = exercise_view.get(request)
 
@@ -29,6 +32,9 @@ class HomePageAPIView(APIView):
 
         measuremnt_view = BodyMeasurementListCreateView()
         measurement_data = measuremnt_view.get(request, user=user)
+        
+        caloricintake_view = CaloricIntakeGetView()
+        caloricintake_data = caloricintake_view.get(request, user=user)
 
         # Combine the data into a response dictionary
         response_data = {
@@ -37,6 +43,7 @@ class HomePageAPIView(APIView):
             "water_intake_data": water_intake_data.data,
             "reminder_data": reminder_set_data.data,
             "measurement_data": measurement_data.data,
+            "caloricintake_data": caloricintake_data.data,
         }
 
         # Return the combined response

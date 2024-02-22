@@ -9,14 +9,14 @@ class BodyMeasurement(models.Model):
     )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
-    # Anthropometric measurements
+   
     height = models.FloatField(help_text="Height in inches", default=0)
     weight = models.FloatField(help_text="Weight in kilograms", default=0)
     chest_size = models.FloatField(help_text="Chest size in inches", default=0)
     waist_size = models.FloatField(help_text="Waist size in inches", default=0)
     hip_size = models.FloatField(help_text="Hip size in inches", default=0)
 
-    # Limb measurements
+    
     left_arm = models.FloatField(help_text="Left arm size in inches", default=0)
     right_arm = models.FloatField(help_text="Right arm size in inches", default=0)
 
@@ -32,7 +32,7 @@ class BodyMeasurement(models.Model):
     right_forearm = models.FloatField(
         help_text="Right forearm size in inches", default=0
     )
-    # Additional information
+   
     notes = models.TextField(
         blank=True, null=True, help_text="Additional notes or comments", default=""
     )

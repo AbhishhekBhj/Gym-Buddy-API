@@ -9,22 +9,34 @@ from .serializers import LogMeasurementsSerializer
 from users.models import CustomUser
 
 
+
+class BodyMeasurementListCreateViewPro(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request, format=None):
+        serializer = LogMeasurementsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)
+            return Response(
+                {
+                    "status": status.HTTP_201_CREATED,
+                    "message": "Measurement added successfully",
+                    "data": serializer.data,
+                }
+            )
+
+        return Response(
+            {
+                "status": status.HTTP_400_BAD_REQUEST,
+                "message": "Measurement could not be added",
+                "data": serializer.errors,
+            }
+        )
+    
 class BodyMeasurementListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
-    # def get(self, request, format=None):
-    #     user = self.request.user
-    #     is_pro_member = CustomUser.objects.get(user=user).is_pro_member
-    #     if is_pro_member:
-    #         queryset = BodyMeasurement.objects.filter(user=user)
-    #     else:
-    #         # Show measurements of the last 15 days
-    #         queryset = BodyMeasurement.objects.filter(
-    #             user=user, created_at__gte=timezone.now() - timedelta(days=15)
-    #         )
-
-    #     serializer = LogMeasurementsSerializer(queryset, many=True)
-    #     return Response(serializer.data)
+    
 
     def get(self, request, user):
         user = request.user
