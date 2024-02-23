@@ -21,8 +21,7 @@ class ExerciseView(APIView):
         serializer = ExerciseSerializer(exercise, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-#remove in production
+    # remove in production
     @api_view(["POST"])
     def post(request):
         serializer = ExerciseSerializer(data=request.data, many=True)
@@ -42,6 +41,39 @@ class ExerciseView(APIView):
     #         target_body_part = TargetBodyPart.objects.all()
     #         serializer = TargetBodyPartSerializer(target_body_part, many=True)
     #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CustomExerciseView(APIView):
+    def post(self, request):
+        try:
+            serializer = ExerciseSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        "status": 200,
+                        "message": "Exercise added successfully",
+                        "data": serializer.data,
+                    }
+                )
+
+            else:
+                return Response(
+                    {
+                        "status": 400,
+                        "message": "Exercise addition failed",
+                        "data": serializer.errors,
+                    }
+                )
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": 500,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                }
+            )
 
 
 class TargetBodyPartView(APIView):

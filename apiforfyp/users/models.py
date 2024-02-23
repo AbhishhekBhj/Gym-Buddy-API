@@ -30,6 +30,14 @@ class CustomUser(AbstractUser):
     otp = models.CharField(max_length=6, blank=True, null=True)
     is_pro_member = models.BooleanField(default=False)
 
+    number_of_custom_routines = models.IntegerField(default=0)
+    number_of_customexercises = models.IntegerField(default=0)
+    number_of_customfood = models.IntegerField(default=0)
+    number_of_custommeals = models.IntegerField(default=0)
+
+    bmi = models.FloatField(default=0)
+    recommended_calories = models.FloatField(default=0)
+
     objects = CustomUserManager()
 
     def __str__(self):
