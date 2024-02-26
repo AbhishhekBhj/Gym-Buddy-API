@@ -6,9 +6,10 @@ from random import randint
 
 def send_otp(email):
     try:
-        subject = f"Your account verification email"
-        otp = randint(1000, 9999)
-        message = f"OTP for verification is {otp}"
+        subject = f"🎁 Special Delivery: Your Account Verification Code!"
+        otp = randint(100000, 999999)
+        message = f"Hello there!\n\nWelcome to My Gym Buddy - your ultimate fitness companion! 🏋️‍♂️\n\nThank you for choosing us to help you on your fitness journey. Your One-Time Password (OTP) for account verification is: {otp}.\n\nWe're pumped to have you on board! Use this OTP to confirm your account and start sweating it out with our amazing features.\n\nIf you didn't request this OTP, no worries - simply ignore this message.\n\nStay motivated and keep pushing your limits!\n\nBest regards,\nThe My Gym Buddy Team"
+
         email_from = settings.EMAIL_HOST
         send_mail(subject, message, email_from, [email], fail_silently=False)
 

@@ -9,10 +9,9 @@ from .serializers import LogMeasurementsSerializer
 from users.models import CustomUser
 
 
-
 class BodyMeasurementListCreateViewPro(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def post(self, request, format=None):
         serializer = LogMeasurementsSerializer(data=request.data)
         if serializer.is_valid():
@@ -32,11 +31,10 @@ class BodyMeasurementListCreateViewPro(APIView):
                 "data": serializer.errors,
             }
         )
-    
+
+
 class BodyMeasurementListCreateView(APIView):
     permission_classes = [IsAuthenticated]
-
-    
 
     def get(self, request, user):
         user = request.user
@@ -102,3 +100,47 @@ class BodyMeasurementDetailView(APIView):
             return Response(
                 {"detail": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN
             )
+
+
+class BodyMeasurementObjectEditView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request, measurement_id):
+        measurement_instance = get_object_or_404(BodyMeasurement, id=measurement_id)
+        data = request.data
+
+        serializer = LogMeasurementsSerializer(
+            measurement_instance, data=data, partial=True
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "message": "Measurement details edited successfully",
+                    "data": serializer.data,
+                    "status": status.HTTP_200_OK,
+                }
+            )
+
+        return Response(
+            {
+                "message": "Measurement details not edited",
+                "data": serializer.errors,
+                "status": status.HTTP_400_BAD_REQUEST,
+            }
+        )
+
+
+class BodyMeasurementObjectDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, measurement_id):
+        measurement_instance = get_object_or_404(BodyMeasurement, id=measurement_id)
+        measurement_instance.delete()
+        return Response(
+            {
+                "message": "Measurement deleted successfully",
+                "status": status.HTTP_200_OK,
+            }
+        )

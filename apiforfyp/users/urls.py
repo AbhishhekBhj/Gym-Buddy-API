@@ -1,5 +1,13 @@
 from django.urls import path
-from .views import  UserRegistrationView,LoginAPIView,VerifyOTPAPI,ResendOTPView, LoginAPIView
+from .views import (
+    UserRegistrationView,
+    LoginAPIView,
+    VerifyOTPAPI,
+    ResendOTPView,
+    LoginAPIView,
+    UploadProfilePicture,
+    EditUserDetails,
+)
 
 
 urlpatterns = [
@@ -8,5 +16,10 @@ urlpatterns = [
     path("verify-otp/", VerifyOTPAPI.as_view(), name="verify-otp"),
     path("resend-otp/", ResendOTPView.as_view(), name="resend-otp"),
     path("login/", LoginAPIView.as_view(), name="login"),
-    # path("editprofile/<int:id>/")
+    path(
+        "uploadprofilephoto/<str:user>/",
+        view=UploadProfilePicture.as_view(),
+        name="uploadprofile",
+    ),
+    path("editprofile/<str:user>/", view=EditUserDetails.as_view(), name="editprofile"),
 ]

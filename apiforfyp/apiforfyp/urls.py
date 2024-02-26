@@ -20,7 +20,13 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt import views as jwt_views
-from .views import HomePageAPIView, PasswordCheckAPIView, ChangePasswordAPIView
+from .views import (
+    HomePageAPIView,
+    PasswordCheckAPIView,
+    ChangePasswordAPIView,
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 from externalfunctions.maintance_calories import UserRelatedFunction
 
@@ -38,17 +44,19 @@ urlpatterns = [
     path("api/workout/", include("logworkout.urls")),
     path("api/meditation/", include("meditationintake.urls")),
     path("api/measurements/", include("logmeasurements.urls")),
-    path(
-        "api/token/", jwt_views.TokenObtainPairView.as_view(), name="token_obtain_pair"
-    ),
-    path(
-        "api/token/refresh/", jwt_views.TokenRefreshView.as_view(), name="token_refresh"
-    ),
+    path("api/export/", include("userdata.urls")),
+    # path(
+    #     "api/token/", jwt_views.TokenObtainPairView.as_view(), name="token_obtain_pair"
+    # ),
+    path("api/token/obtain/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    # path(
+    #     "api/token/refresh/", jwt_views.TokenRefreshView.as_view(), name="token_refresh"
+    # ),
     path(
         "api/calculate_maintance_calories/",
         view=UserRelatedFunction.calculate_maintance_calories,
     ),
-    
     path("api/workoutroutine/", include("customroutine.urls")),
 ]
 

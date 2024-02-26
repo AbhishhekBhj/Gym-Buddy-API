@@ -5,4 +5,11 @@ urlpatterns = [
     path("addmeasurement/", BodyMeasurementListCreateView.as_view()),
     path("addmeasurementpro/", BodyMeasurementListCreateViewPro.as_view()),
     path("getmeasurement/<int:user_id>/", BodyMeasurementDetailView.as_view()),
+    path(
+        "editmeasurement/<int:measurement_id>/", BodyMeasurementObjectEditView.as_view()
+    ),
+    path(
+        "deletemeasurement/<int:measurement_id>/",
+        BodyMeasurementObjectDeleteView.as_view(),
+    ),
 ]

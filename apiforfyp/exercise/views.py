@@ -10,6 +10,7 @@ from .serializers import (
 from .models import Exercise, TargetBodyPart, ExerciseType
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from users.models import CustomUser
 
 
 # Create your views here.
@@ -176,4 +177,68 @@ class ExerciseTypeView(APIView):
                     "message": "Internal Server Error",
                     "data": str(e),
                 }
+            )
+
+
+class UploadCustomExercise(APIView):
+    def post(self, request, user):
+        try:
+            user_instance = CustomUser.objects.get(username=user)
+
+            exercise_data = request.data
+            exercise_data["added_by_user"] = True
+            
+            
+            exercise_data["uploaded_by"] = (
+                user_instance.id
+            )  
+
+            serializer = ExerciseSerializer(data=exercise_data)
+
+            if serializer.is_valid():
+                if not user_instance.is_pro_member:
+                    if user_instance.number_of_customexercises >= 5:
+                        return Response(
+                            {
+                                "status": 400,
+                                "message": "Free users can only upload 5 custom exercises",
+                            }
+                        )
+
+                user_instance.number_of_customexercises += 1
+                user_instance.save()
+                serializer.save()
+                return Response(
+                    {
+                        "status": 200,
+                        "message": "Exercise added successfully",
+                        "data": serializer.data,
+                        "uploaded_by": user_instance.username,
+                    }
+                )
+            else:
+                return Response(
+                    {
+                        "status": 400,
+                        "message": "Exercise addition failed",
+                        "data": serializer.errors,
+                    }
+                )
+
+        except CustomUser.DoesNotExist:
+            return Response(
+                {
+                    "status": 404,
+                    "message": "User not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "status": 500,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

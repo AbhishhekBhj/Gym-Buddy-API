@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "customroutine",
     "food",
     "users",
+    "userdata",
     "meditationintake",
     "reminders",
     "exercise",
@@ -179,7 +180,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=200),
 }
 
 # load envrionment variable from .env file

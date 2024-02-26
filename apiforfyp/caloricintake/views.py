@@ -14,6 +14,12 @@ from .models import CaloricIntake
 
 
 class CaloricIntakeView(APIView):
+    """
+    View for handling caloric intake data.
+
+    Requires authentication for all requests.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
@@ -48,6 +54,10 @@ class CaloricIntakeView(APIView):
 
 
 class CaloricIntakeGetView(APIView):
+    """
+    Get caloric intake data for a user.
+
+    """
 
     permission_classes = [IsAuthenticated]
 
@@ -80,6 +90,91 @@ class CaloricIntakeGetView(APIView):
                     "status": 200,
                     "message": "Caloric Intake data",
                     "data": serializer.data,
+                }
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": 500,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                }
+            )
+
+
+class EditCaloricIntakeObjectDetails(APIView):
+    """
+    API view for editing the details of a caloric intake object.
+    """
+
+    def patch(request, intake_id, self):
+        try:
+            # get object with id
+            food_instance = CaloricIntake.objects.get(id=intake_id)
+            data = request.data
+
+            serializer = CaloricIntakeSerializers(
+                food_instance, data=data, partial=True
+            )
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    {
+                        "status": 200,
+                        "message": "Caloric Intake Object Updated",
+                        "data": serializer.data,
+                    }
+                )
+
+            else:
+                return Response(
+                    {
+                        "status": 400,
+                        "message": "Caloric Intake Object Not Updated",
+                        "data": serializer.errors,
+                    }
+                )
+
+        # if caloric intake not found
+        except CaloricIntake.DoesNotExist:
+            return Response(
+                {
+                    "status": 404,
+                    "message": "Caloric Intake Object Not Found",
+                }
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": 500,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                }
+            )
+
+
+class CaloricIntakeObjectDeleteView(APIView):
+    def delete(self, request, intake_id):
+        try:
+            # get object with id
+            food_instance = CaloricIntake.objects.get(id=intake_id)
+            food_instance.delete()
+            return Response(
+                {
+                    "status": 200,
+                    "message": "Caloric Intake Object Deleted",
+                }
+            )
+
+        # if caloric intake not found
+        except CaloricIntake.DoesNotExist:
+            return Response(
+                {
+                    "status": 404,
+                    "message": "Caloric Intake Object Not Found",
                 }
             )
 

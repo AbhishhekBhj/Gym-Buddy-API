@@ -28,6 +28,10 @@ class Exercise(models.Model):
     type = models.ForeignKey(ExerciseType, on_delete=models.CASCADE, default=1)
     calories_burned_per_hour = models.IntegerField(blank=False, default=100)
     added_by_user = models.BooleanField(default=False)
+    uploaded_by = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.exercise_name
+    
+    
+    

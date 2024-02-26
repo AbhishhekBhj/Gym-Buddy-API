@@ -13,6 +13,8 @@ class Food(models.Model):
     food_protein_per_serving = models.FloatField(default=0.0, blank=False)
     food_carbs_per_serving = models.FloatField(default=0.0, blank=False)
     food_fat_per_serving = models.FloatField(default=0.0, blank=False)
+    added_by_user = models.BooleanField(default=False)
+    uploaded_by = models.CharField(max_length=100, blank=True, null=True)
 
     def __str__(self):
         return self.food_name

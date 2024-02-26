@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 
-from .models import Exercise, TargetBodyPart,ExerciseType
+from .models import Exercise, TargetBodyPart, ExerciseType
 
 
 class ExerciseSerializer(serializers.ModelSerializer):

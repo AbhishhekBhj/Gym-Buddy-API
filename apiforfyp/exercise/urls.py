@@ -1,5 +1,10 @@
 from django.urls import path
-from exercise.views import ExerciseView, ExerciseTypeView, TargetBodyPartView
+from exercise.views import (
+    ExerciseView,
+    ExerciseTypeView,
+    TargetBodyPartView,
+    UploadCustomExercise,
+)
 
 urlpatterns = [
     path("exercise/", ExerciseView.get, name="exercise_list"),
@@ -13,6 +18,10 @@ urlpatterns = [
         ExerciseTypeView.as_view(),
         name="exercise_type_list",
     ),
-    
     path("post/", ExerciseView.post, name="exercise_post"),
+    path(
+        "custompost/<str:user>/",
+        UploadCustomExercise.as_view(),
+        name="custom_exercise_post",
+    ),
 ]

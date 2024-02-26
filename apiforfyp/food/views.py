@@ -5,6 +5,9 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from users.models import CustomUser
+
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -67,7 +70,58 @@ class FoodView:
                     }
                 )
 
-            return Response({"status": 200, "data": serializer.data, "message": "success"})
+            return Response(
+                {"status": 200, "data": serializer.data, "message": "success"}
+            )
 
         except Food.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class AddCustomFoodItem(APIView):
+    def post(self, request, user):
+        try:
+            user_instance = CustomUser.objects.get(username=user)
+            food_data = request.data
+            food_data["added_by_user"] = True
+            food_data["uploaded_by"] = user_instance.id
+
+            serializer = FoodSerializer(data=food_data)
+
+            if serializer.is_valid():
+                if not user_instance.is_pro_member:
+                    if user_instance.number_of_customfoods >= 2:
+                        return Response(
+                            {
+                                "status": 400,
+                                "message": "Free users can only upload 2 custom foods",
+                            }
+                        )
+
+                user_instance.number_of_customfoods += 1
+                user_instance.save()
+                serializer.save()
+                return Response(
+                    {
+                        "status": 200,
+                        "message": "Food added successfully",
+                        "data": serializer.data,
+                        "uploaded_by": user_instance.username,
+                    }
+                )
+            else:
+                return Response(
+                    {
+                        "status": 400,
+                        "message": "Food addition failed",
+                        "data": serializer.errors,
+                    }
+                )
+        except CustomUser.DoesNotExist:
+            return Response(
+                {
+                    "status": 404,
+                    "message": "User not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )

@@ -8,14 +8,37 @@ from reminders.views import RemindersGetAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.hashers import check_password
 from logmeasurements.views import BodyMeasurementListCreateView
-from caloricintake.views import  CaloricIntakeGetView
+from caloricintake.views import CaloricIntakeGetView
+from rest_framework_simplejwt.views import TokenViewBase
+from .serializers import TokenObtainLifetimeSerializer, TokenRefreshLifetimeSerializer
+from users.models import CustomUser
+from django.contrib.auth.hashers import make_password
 
 
 class HomePageAPIView(APIView):
+    """
+    API view for the home page.
+
+    This view retrieves data from various other views and combines them into a response dictionary.
+
+    Methods:
+    - get: Retrieves data from ExerciseView, WorkoutGetView, WaterIntakeGetView, RemindersGetAPIView,
+           BodyMeasurementListCreateView, and CaloricIntakeGetView, and combines them into a response dictionary.
+    """
+
     def get(self, request, user):
+        """
+        Retrieves data from ExerciseView, WorkoutGetView, WaterIntakeGetView, RemindersGetAPIView,
+        BodyMeasurementListCreateView, and CaloricIntakeGetView, and combines them into a response dictionary.
+
+        Parameters:
+        - request: The HTTP request object.
+        - user: The user object.
+
+        Returns:
+        - A Response object containing the combined response data and status code.
+        """
         # Instantiate the ExerciseView and call its get method
-        
-        
         exercise_view = ExerciseView()
         exercise_data = exercise_view.get(request)
 
@@ -32,7 +55,7 @@ class HomePageAPIView(APIView):
 
         measuremnt_view = BodyMeasurementListCreateView()
         measurement_data = measuremnt_view.get(request, user=user)
-        
+
         caloricintake_view = CaloricIntakeGetView()
         caloricintake_data = caloricintake_view.get(request, user=user)
 
@@ -51,6 +74,11 @@ class HomePageAPIView(APIView):
 
 
 class PasswordCheckAPIView(APIView):
+    """
+    API view for checking if a provided password matches the one in the database.
+    Requires authentication.
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request, user):
@@ -71,7 +99,7 @@ class ChangePasswordAPIView(APIView):
 
     def post(self, request, user):
         provided_password = request.data.get("password")
-        user = request.user
+        user = CustomUser.objects.get(username=user)
 
         if provided_password is None:
             return Response(
@@ -88,8 +116,11 @@ class ChangePasswordAPIView(APIView):
                     "message": "New password cannot be same as old password",
                 }
             )
+
+            # hash before saving
+        hashed_password = make_password(provided_password)
         # change the password
-        user.set_password(provided_password)
+        user.password = hashed_password
         user.save()
 
         return Response(
@@ -98,3 +129,19 @@ class ChangePasswordAPIView(APIView):
                 "message": "Password changed successfully",
             }
         )
+
+
+class TokenObtainPairView(TokenViewBase):
+    """
+    Returns jwt token
+    """
+
+    serializer_class = TokenObtainLifetimeSerializer
+
+
+class TokenRefreshView(TokenViewBase):
+    """
+    Renknews token with new expire time
+    """
+
+    serializer_class = TokenRefreshLifetimeSerializer
