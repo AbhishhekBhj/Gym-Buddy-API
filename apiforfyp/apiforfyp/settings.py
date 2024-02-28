@@ -37,16 +37,17 @@ ALLOWED_HOSTS = ["10.0.2.2"]
 INSTALLED_APPS = [
     # "daphne",
     # "channels",
+    "django_crontab",
     "rest_framework",
     "rest_framework_simplejwt",
     "rest_framework.authtoken",
-    "customadmin",
     "apiforfyp",
     "customroutine",
     "food",
     "users",
     "userdata",
     "meditationintake",
+    "gymbuddyadmin",
     "reminders",
     "exercise",
     "waterintake",
@@ -54,12 +55,19 @@ INSTALLED_APPS = [
     "logmeasurements",
     "meals",
     "caloricintake",
-    "django.contrib.admin",
+    # "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+]
+CRON_CLASSES = [
+    "apiforfyp.cron.MyCronJob",
+]
+
+CRONJOBS = [
+    "*/1 * * * * apiforfyp.cron.send_motivating_mails",
 ]
 
 ALLOWED_HOSTS = ["10.0.2.2", "127.0.0.1"]
@@ -77,12 +85,16 @@ MIDDLEWARE = [
 ]
 
 
+STATIC_URL = "/static/"
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
 ROOT_URLCONF = "apiforfyp.urls"
 CSRF_COOKIE_SECURE = False
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR, "template"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [

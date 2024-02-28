@@ -31,11 +31,11 @@ from .views import (
 from externalfunctions.maintance_calories import UserRelatedFunction
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    # path("admin/", admin.site.urls),
     path("api/password/post/<str:user>/", view=PasswordCheckAPIView.as_view()),
     path("api/password/change/<str:user>/", view=ChangePasswordAPIView.as_view()),
     path("api/home/<str:user>/", view=HomePageAPIView.as_view()),
-    path("customadmin/", include("customadmin.urls")),
+    path("gymbuddyadmin/", include("gymbuddyadmin.urls")),
     path("api/foods/", include("food.urls")),
     path("api/users/", include("users.urls")),
     path("api/exercise/", include("exercise.urls")),
