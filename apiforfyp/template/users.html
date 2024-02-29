@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static%}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All Users</title>
+    <link rel="stylesheet" href="{% static 'users.css' %}" />
+  </head>
+  <body>
+    <!-- users_table.html -->
+
+    <table>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Fitness Level</th>
+          <th>Fitness Goal</th>
+          <th>Age</th>
+          <th>Height</th>
+          <th>Weight</th>
+          {% comment %}
+          <th>Password</th>
+          {% endcomment %}
+          <th>Is Verfied</th>
+          <th>Profile Picture</th>
+          <th>Is Pro Member</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user_data in data %}
+        <tr>
+          <td>{{ user_data.username }}</td>
+          <td>{{ user_data.name }}</td>
+          <td>{{ user_data.email }}</td>
+          <td>{{ user_data.fitness_level }}</td>
+          <td>{{ user_data.fitness_goal }}</td>
+          <td>{{ user_data.age }}</td>
+          <td>{{ user_data.height }}cm</td>
+          <td>{{ user_data.weight }}kg</td>
+          {% comment %}
+          <td>{{ user_data.password }}</td>
+          {% endcomment %}
+          <td>{{ user_data.is_verified }}</td>
+          <td>
+            <img
+              src="{{ user_data.profile_picture.url }}"
+              alt="Profile Picture"
+              style="width: 100px; height: 100px"
+            />
+          </td>
+          <td>{{ user_data.is_pro_member }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

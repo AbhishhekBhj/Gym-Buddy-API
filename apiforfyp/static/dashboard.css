@@ -1,0 +1,35 @@
+/* Custom CSS for Admin Dashboard Sidebar */
+.w3-sidebar {
+  height: 100%;
+  width: 15%;
+  background-color: #f1f1f1;
+  position: fixed;
+  z-index: 1;
+  overflow: auto;
+}
+
+.w3-sidebar a {
+  padding: 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.w3-sidebar a:hover {
+  background-color: #ddd;
+}
+
+.w3-sidebar h3 {
+  padding: 16px;
+  margin: 0;
+}
+
+/* Custom CSS for Page Content */
+.page-content {
+  margin-left: 15%;
+  padding: 20px;
+}
+
+.w3-container.w3-teal {
+  padding: 20px;
+  color: white;
+}
