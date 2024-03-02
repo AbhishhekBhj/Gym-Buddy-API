@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'dashboard.css' %}" />
+    <style>
+      /* Add CSS to control the sidebar width */
+      .w3-sidebar {
+        transition: width 0.3s; /* Smooth transition */
+        overflow-x: hidden; /* Hide overflow to prevent horizontal scrollbar */
+      }
+
+      /* Add styling for the button to toggle the sidebar */
+      #toggle-sidebar-btn {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        cursor: pointer;
+        background-color: black;
+        border: 1px solid #ccc;
+
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s, box-shadow 0.3s;
+      }
+
+      #toggle-sidebar-btn:hover {
+        background-color: #f0f0f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Style for the menu and close icons */
+      .icon {
+        color: white;
+        margin-right: 5px;
+      }
+
+      .icon: hover {
+        color: black;
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Button to toggle sidebar -->
+    <div
+      id="sidebar"
+      class="w3-sidebar w3-light-grey w3-bar-block"
+      style="width: 200px"
+    >
+      <h3 class="w3-bar-item">Menu</h3>
+      <a href="{% url 'users' %}" class="w3-bar-item w3-button">Users</a>
+      <a href="{% url 'exercises' %}" class="w3-bar-item w3-button"
+        >Exercises</a
+      >
+      <a href="{% url 'food' %}" class="w3-bar-item w3-button">Food Items</a>
+      <a href="{% url 'logout' %}" class="w3-bar-item w3-button">Logout</a>
+      <a href="{% url 'add_new_user' %}" class="w3-bar-item w3-button"
+        >Add New User</a
+      >
+
+      <button id="toggle-sidebar-btn" onclick="toggleSidebar()">
+        <span id="menu-icon" class="icon">&#9776;</span>
+        <!-- Menu icon -->
+      </button>
+    </div>
+
+    <script>
+      function toggleSidebar() {
+        // Function to open and close the sidebar
+        var sidebar = document.getElementById("sidebar");
+        var content = document.querySelector(".main-content");
+        var menuIcon = document.getElementById("menu-icon");
+        var closeIcon = document.getElementById("close-icon");
+        if (sidebar.style.width === "200px") {
+          sidebar.style.width = "0"; // Close sidebar
+          content.style.marginLeft = "0";
+          menuIcon.style.display = "inline";
+          closeIcon.style.display = "none";
+        } else {
+          sidebar.style.width = "200px"; // Open sidebar
+          content.style.marginLeft = "200px";
+          menuIcon.style.display = "none";
+          closeIcon.style.display = "inline";
+        }
+      }
+    </script>
+  </body>
+</html>

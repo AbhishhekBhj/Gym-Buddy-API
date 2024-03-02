@@ -25,10 +25,11 @@
 
 /* Custom CSS for Page Content */
 .page-content {
-  margin-left: 15%;
+  margin-left: 15%; /* Adjust the margin-left to match the width of the sidebar */
   padding: 20px;
 }
 
+/* Add additional styles as needed */
 .w3-container.w3-teal {
   padding: 20px;
   color: white;

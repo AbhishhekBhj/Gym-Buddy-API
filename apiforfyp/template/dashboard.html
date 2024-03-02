@@ -3,55 +3,34 @@
   <head>
     <title>Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .adminfunctions {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+        background-color: blue;
+      }
+      .adminfunctions h2 {
+        display: inline;
+        color: black;
+      }
+    </style>
   </head>
   <body>
-    <!-- Sidebar -->
-    <div class="w3-sidebar w3-light-grey w3-bar-block" style="width: 15%">
-      <h3 class="w3-bar-item">Menu</h3>
-      <a href="{% url 'users' %}" class="w3-bar-item w3-button">Users</a>
-      <a href="{%url 'exercises'%}" class="w3-bar-item w3-button">Exercises</a>
-      <a href="{% url 'food'%}" class="w3-bar-item w3-button">Food Items</a>
-    </div>
+    {% include 'sidebar.html'%}
 
-    <!-- Page Content -->
-    <div class="page-content">
-      <div id="section1" class="w3-container w3-teal">
-        <h1>Section 1</h1>
+    <div class="adminfunctions">
+      <div class="w3-container w3-teal">
+        <h2>Add User</h2>
       </div>
-      <div id="section2" class="w3-container w3-teal" style="display: none">
-        <h1>Section 2</h1>
+      <div class="w3-container w3-teal">
+        <h2>Add FoodItem</h2>
       </div>
-      <div id="section3" class="w3-container w3-teal" style="display: none">
-        <h1>Section 3</h1>
+      <div class="w3-container w3-teal">
+        <h2>Add Exercise</h2>
       </div>
     </div>
-
-    <script>
-      // Function to show/hide sections based on clicked link
-      function showSection(sectionId) {
-        // Hide all sections
-        var sections = document.querySelectorAll(".page-content .w3-container");
-        sections.forEach(function (section) {
-          section.style.display = "none";
-        });
-
-        // Show the selected section
-        var selectedSection = document.getElementById(sectionId);
-        if (selectedSection) {
-          selectedSection.style.display = "block";
-        }
-      }
-
-      // Attach click event listeners to sidebar links
-      var sidebarLinks = document.querySelectorAll(".w3-sidebar a");
-      sidebarLinks.forEach(function (link) {
-        link.addEventListener("click", function (event) {
-          var sectionId = link.getAttribute("href").substring(1);
-          showSection(sectionId);
-        });
-      });
-    </script>
   </body>
 </html>

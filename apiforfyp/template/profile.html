@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Profile</title>
+    <link rel="stylesheet" href="{% static 'profile.css' %}" />
+  </head>
+  <body>
+    <div class="profile">
+      <h1>Profile of {{ user.name }}</h1>
+
+      {% if user.profile_picture %}
+      <img src="{{ user.profile_picture.url }}" alt="Profile Picture" />
+      {% else %}
+      <img
+        src="{%static 'no_profile_picture.jpg'%}"
+        alt="Default Profile Picture"
+      />
+      {% endif %}
+
+      <div class="profile-info">
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Pro Member:</strong> {{ user.is_pro_member }}</p>
+        <p><strong>Verified:</strong> {{ user.is_verified }}</p>
+        <p><strong>Gender:</strong> {{ user.gender }}</p>
+        <p><strong>Weight:</strong> {{ user.weight }}</p>
+        <p><strong>Height:</strong> {{ user.height }}</p>
+        <p><strong>Age:</strong> {{ user.age }}</p>
+        <p><strong>Fitness Level:</strong> {{ user.fitness_level }}</p>
+        <p><strong>Fitness Goal:</strong> {{ user.fitness_goal }}</p>
+        <p>
+          <strong>Number of Custom Routines:</strong>
+          {{user.number_of_custom_routines }}
+        </p>
+        <p>
+          <strong>Number of Custom Exercises:</strong>
+          {{user.number_of_customexercises }}
+        </p>
+        <p>
+          <strong>Number of Custom Foods:</strong>
+          {{user.number_of_customfood}}
+        </p>
+        <p>
+          <strong>Number of Custom Meals:</strong>
+          {{user.number_of_custommeals}}
+        </p>
+        <p>
+          <strong>BMI:</strong>
+          {{user.bmi}}
+        </p>
+        <p>
+          <strong>Recommended Calories Per Day:</strong>
+          {{user.recommended_calories}}
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

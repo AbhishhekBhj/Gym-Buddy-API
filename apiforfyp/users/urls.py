@@ -7,6 +7,7 @@ from .views import (
     LoginAPIView,
     UploadProfilePicture,
     EditUserDetails,
+    UserDeleteAccountView
 )
 
 
@@ -22,4 +23,5 @@ urlpatterns = [
         name="uploadprofile",
     ),
     path("editprofile/<str:user>/", view=EditUserDetails.as_view(), name="editprofile"),
+    path('delete/<int:user>/', view=UserDeleteAccountView.as_view(), name="deleteuser")
 ]

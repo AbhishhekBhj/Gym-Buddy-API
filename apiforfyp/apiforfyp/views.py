@@ -1,3 +1,4 @@
+from django.shortcuts import redirect, render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,6 +14,7 @@ from rest_framework_simplejwt.views import TokenViewBase
 from .serializers import TokenObtainLifetimeSerializer, TokenRefreshLifetimeSerializer
 from users.models import CustomUser
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import logout
 
 
 class HomePageAPIView(APIView):
@@ -145,3 +147,12 @@ class TokenRefreshView(TokenViewBase):
     """
 
     serializer_class = TokenRefreshLifetimeSerializer
+
+
+def home(request):
+    return render(request, "home.html")
+
+
+def logouts(request):
+    logout(request)
+    return redirect("custom_login")

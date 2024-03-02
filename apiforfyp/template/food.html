@@ -13,6 +13,7 @@
     />
   </head>
   <body>
+    {% include 'sidebar.html' %}
     <!-- Table content -->
     <table>
       <thead>
@@ -54,7 +55,11 @@
           <td>No Image</td>
           {% endif %}
           <td>
-            <a href="#"><i class="fas fa-edit"></i></a>
+            {% comment %}
+            <a href="{% url 'edit_food' item_id=id %}"
+              ><i class="fas fa-edit"></i
+            ></a>
+            {% endcomment %}
 
             <a href="{% url 'delete_item' item_id=food_data.id %}"
               ><i class="fas fa-trash-alt"></i>

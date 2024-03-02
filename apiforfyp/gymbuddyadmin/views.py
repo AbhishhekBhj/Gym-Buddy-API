@@ -7,6 +7,8 @@ from food.models import Food
 from food.serializers import FoodSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .forms import EditUserDetailsForm, AddNewUserForm
 
 
 def adminlogin(request):
@@ -21,7 +23,7 @@ def adminlogin(request):
             print(user)
             if user.is_superuser:
                 auth_login(request, user)
-                return render(request, "dashboard.html")
+                return redirect("dashboard")
 
             return HttpResponse(
                 "Not an admin user. Please login with admin credentials."
@@ -41,12 +43,18 @@ def login(request):
     return render(request, "index.html")
 
 
+def dashboard(request):
+    return render(request, "dashboard.html")
+
+
+@login_required
 def userpage(request):
     data = []
     common_users = CustomUser.objects.filter(is_superuser=False)
     for user in common_users:
         data.append(
             {
+                "id": user.id,
                 "fitness_level": user.fitness_level,
                 "fitness_goal": user.fitness_goal,
                 "age": user.age,
@@ -65,6 +73,7 @@ def userpage(request):
     return render(request, "users.html", {"data": data})
 
 
+@login_required
 def exercises(request):
     data = []
     all_exercises = Exercise.objects.all()
@@ -91,6 +100,7 @@ def exercises(request):
     return render(request, "exercise.html", {"data": data})
 
 
+@login_required
 def food(request):
     # Query all food objects
     foods = Food.objects.all()
@@ -121,6 +131,7 @@ def food(request):
     return render(request, "food.html", {"data": data})
 
 
+@login_required
 def delete_item(request, item_id):
     print(item_id)
     try:
@@ -138,6 +149,7 @@ def delete_item(request, item_id):
     return redirect("food")
 
 
+@login_required
 def edit_food(request):
     if request.method == "POST":
         # Process form submission
@@ -161,3 +173,95 @@ def edit_food(request):
             "image": food.food_image.url if food.food_image else "",
         }
         return render(request, "edit_food.html", context)
+
+
+def edit_user(request, user_id):
+    user = CustomUser.objects.get(id=user_id)
+    if request.method == "POST":
+        form = EditUserDetailsForm(request.POST)
+        if form.is_valid():
+            # Process the form data
+            # Update the user object with the form data
+            user.username = form.cleaned_data["username"]
+            user.name = form.cleaned_data["name"]
+            user.email = form.cleaned_data["email"]
+            user.fitness_level = form.cleaned_data["fitness_level"]
+            user.fitness_goal = form.cleaned_data["fitness_goal"]
+            user.age = form.cleaned_data["age"]
+            user.height = form.cleaned_data["height"]
+            user.weight = form.cleaned_data["weight"]
+            user.is_verified = form.cleaned_data["is_verified"]
+            user.is_pro_member = form.cleaned_data["is_pro_member"]
+            user.save()
+            return redirect("profile", user_id=user_id)  # Redirect to profile page
+    else:
+        form = EditUserDetailsForm(
+            initial={
+                "username": user.username,
+                "name": user.name,
+                "email": user.email,
+                "fitness_level": user.fitness_level,
+                "fitness_goal": user.fitness_goal,
+                "age": user.age,
+                "height": user.height,
+                "weight": user.weight,
+                "is_verified": user.is_verified,
+                "is_pro_member": user.is_pro_member,
+            }
+        )
+    return render(request, "edit_user.html", {"form": form, "user": user})
+
+
+def view_profile(request, user_id):
+    user = CustomUser.objects.get(id=user_id)
+    return render(request, "profile.html", {"user": user})
+
+
+def add_new_user(request):
+    return render(request, "add_new_user.html", {"form": AddNewUserForm()})
+
+
+def register_new_user(request):
+    if request.method == "POST":
+        form = AddNewUserForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.set_password(
+                form.cleaned_data["password"]
+            )  # Ensure your form has a password field
+            new_user.save()
+            messages.success(request, "User added successfully")
+            return redirect("dashboard")  # Ensure you have a URL name 'dashboard'
+        else:
+            print(request.data)
+            messages.error(request, "Error adding user")
+            # Return the same page with form errors
+            return render(request, "add_new_user.html", {"form": form})
+    else:
+        form = AddNewUserForm()
+        return render(request, "add_new_user.html", {"form": form})
+    
+    
+    
+def alter_user_details(request, username):
+    if request.method =="PATCH":
+        form = EditUserDetailsForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = CustomUser.objects.get(username=username)
+            user.username = form.cleaned_data["username"]
+            user.name = form.cleaned_data["name"]
+            user.email = form.cleaned_data["email"]
+            user.fitness_level = form.cleaned_data["fitness_level"]
+            user.fitness_goal = form.cleaned_data["fitness_goal"]
+            user.age = form.cleaned_data["age"]
+            user.height = form.cleaned_data["height"]
+            user.weight = form.cleaned_data["weight"]
+            user.is_verified = form.cleaned_data["is_verified"]
+            user.is_pro_member = form.cleaned_data["is_pro_member"]
+            user.save()
+            return redirect("profile", user_id=user.id)
+        
+        else:
+            return HttpResponse("Invalid form data")
+    else:
+        return HttpResponse("Invalid request method")

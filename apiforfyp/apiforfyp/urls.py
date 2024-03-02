@@ -26,12 +26,20 @@ from .views import (
     ChangePasswordAPIView,
     TokenObtainPairView,
     TokenRefreshView,
+    home,
+    logouts as logot,
 )
 
 from externalfunctions.maintance_calories import UserRelatedFunction
 
 urlpatterns = [
-    # path("admin/", admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("", view=home, name="home"),
+    path(
+        "logout/",
+        view=logot,
+        name="logout",
+    ),
     path("api/password/post/<str:user>/", view=PasswordCheckAPIView.as_view()),
     path("api/password/change/<str:user>/", view=ChangePasswordAPIView.as_view()),
     path("api/home/<str:user>/", view=HomePageAPIView.as_view()),

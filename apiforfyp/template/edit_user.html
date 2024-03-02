@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit User</title>
+    <style>
+      h1 {
+        text-align: center;
+        background-color: black;
+        display: inline-block;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+      }
+
+      #submit {
+        background-color: black;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      form {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <form
+      method="PATCH"
+      action="{% url 'alter_user_details' username=user.username %}"
+    >
+      <h1>Edit User {{ user.username }}</h1>
+      {% comment %} {% csrf_token %} {% endcomment %} {{ form.as_p }}
+      <input type="submit" value="Update" id="submit" />
+    </form>
+  </body>
+</html>

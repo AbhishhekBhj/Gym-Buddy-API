@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New User</title>
+  </head>
+  <body>
+    <div class="addusercontainer">
+      <h1>Add New User</h1>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'register_new_user' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Add User</button>
+    </form>
+    </div>
+  </body>
+</html>
