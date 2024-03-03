@@ -13,6 +13,11 @@ from .views import (
     add_new_user,
     register_new_user,
     alter_user_details,
+    navigate_to_add_exercise,
+    navigate_to_add_food,
+    add_new_exercise,
+    add_new_food,
+    delete_exercise,
 )
 
 urlpatterns = [
@@ -29,4 +34,13 @@ urlpatterns = [
     path("adduser/", add_new_user, name="add_new_user"),
     path("registeruser/", register_new_user, name="register_new_user"),
     path("alteruser/<str:username>/", alter_user_details, name="alter_user_details"),
+    path(
+        "navigate_to_add_exercise/",
+        navigate_to_add_exercise,
+        name="navigate_to_add_exercise",
+    ),
+    path("navigate_to_add_food/", navigate_to_add_food, name="navigate_to_add_food"),
+    path("add_new_exercise/", add_new_exercise, name="add_new_exercise"),
+    path("add_new_food/", add_new_food, name="add_new_food"),
+    path("deleteexercise/<int:exercise_id>/", delete_exercise, name="delete_exercise"),
 ]

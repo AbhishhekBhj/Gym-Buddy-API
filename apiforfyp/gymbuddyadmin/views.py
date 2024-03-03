@@ -2,17 +2,26 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.http import HttpResponse
 from users.models import CustomUser
-from exercise.models import Exercise
+from exercise.models import Exercise, TargetBodyPart, ExerciseType
 from food.models import Food
 from food.serializers import FoodSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import EditUserDetailsForm, AddNewUserForm
+from .forms import EditUserDetailsForm, AddNewUserForm, FoodForm, ExerciseForm
 
 
 def adminlogin(request):
+    """
+    View function for handling admin login.
 
+    Args:
+        request (HttpRequest): The HTTP request object.
+
+    Returns:
+        HttpResponse: The HTTP response object.
+
+    """
     if request.method == "POST":
         # Handle POST request for authentication
         username = request.POST.get("username")
@@ -40,6 +49,15 @@ def adminlogin(request):
 
 
 def login(request):
+    """
+    Renders the index.html template for the login page.
+
+    Parameters:
+    - request: The HTTP request object.
+
+    Returns:
+    - A rendered HTML response.
+    """
     return render(request, "index.html")
 
 
@@ -86,6 +104,7 @@ def exercises(request):
 
         data.append(
             {
+                "exercise_id": exercise.exercise_id,
                 "name": exercise.exercise_name,
                 "details": exercise.exercise_details,
                 "image": exercise.exercise_image,
@@ -118,7 +137,7 @@ def food(request):
                 "description": food.food_description,
                 "calories_per_serving": food.food_calories_per_serving,
                 "serving_size": food.food_serving_size,
-                "protein_per_serving": food.food_protein_per_serving,
+                "protein_per_serving": food.food_protein_per_servings,
                 "carbs_per_serving": food.food_carbs_per_serving,
                 "fat_per_serving": food.food_fat_per_serving,
                 "image": food.food_image,
@@ -133,7 +152,7 @@ def food(request):
 
 @login_required
 def delete_item(request, item_id):
-    print(item_id)
+
     try:
         # Get the item to be deleted
         item = get_object_or_404(Food, id=item_id)
@@ -147,6 +166,23 @@ def delete_item(request, item_id):
 
     # Redirect to the food page
     return redirect("food")
+
+
+@login_required
+def delete_exercise(request, exercise_id):
+    try:
+        # Get the item to be deleted
+        item = get_object_or_404(Exercise, exercise_id=exercise_id)
+
+        # Delete the item
+        item.delete()
+
+        messages.success(request, "Item deleted successfully.")
+    except Exercise.DoesNotExist:
+        messages.error(request, "Item not found.")
+
+    # Redirect to the food page
+    return redirect("exercises")
 
 
 @login_required
@@ -173,6 +209,38 @@ def edit_food(request):
             "image": food.food_image.url if food.food_image else "",
         }
         return render(request, "edit_food.html", context)
+
+
+@login_required
+def edit_exercise(request, exercise_id):
+    exercise = Exercise.objects.get(pk=exercise_id)
+    if request.method == "POST":
+        form = ExerciseForm(request.POST, request.FILES)
+        if form.is_valid():
+            exercise.exercise_name = form.cleaned_data["exercise_name"]
+            exercise.exercise_details = form.cleaned_data["exercise_details"]
+            exercise.exercise_image = form.cleaned_data["exercise_image"]
+            exercise.calories_burned_per_hour = form.cleaned_data[
+                "calories_burned_per_hour"
+            ]
+            exercise.added_by_user = form.cleaned_data["added_by_user"]
+            exercise.uploaded_by = form.cleaned_data["uploaded_by"]
+            exercise.save()
+            return redirect("exercises")
+
+    else:
+        form = ExerciseForm(
+            initial={
+                "exercise_name": exercise.exercise_name,
+                "exercise_details": exercise.exercise_details,
+                "exercise_image": exercise.exercise_image,
+                "calories_burned_per_hour": exercise.calories_burned_per_hour,
+                "added_by_user": exercise.added_by_user,
+                "uploaded_by": exercise.uploaded_by,
+            }
+        )
+
+    return render(request, "edit_exercise.html", {"form": form, "exercise": exercise})
 
 
 def edit_user(request, user_id):
@@ -240,11 +308,10 @@ def register_new_user(request):
     else:
         form = AddNewUserForm()
         return render(request, "add_new_user.html", {"form": form})
-    
-    
-    
+
+
 def alter_user_details(request, username):
-    if request.method =="PATCH":
+    if request.method == "PATCH":
         form = EditUserDetailsForm(request.POST, request.FILES)
         if form.is_valid():
             user = CustomUser.objects.get(username=username)
@@ -260,8 +327,78 @@ def alter_user_details(request, username):
             user.is_pro_member = form.cleaned_data["is_pro_member"]
             user.save()
             return redirect("profile", user_id=user.id)
-        
+
         else:
             return HttpResponse("Invalid form data")
     else:
         return HttpResponse("Invalid request method")
+
+
+def navigate_to_add_food(request):
+    form = FoodForm()
+    return render(request, "add_new_food.html", {"form": form})
+
+
+def navigate_to_add_exercise(request):
+    form = ExerciseForm()
+    return render(request, "add_new_exercise.html", {"form": form})
+
+
+def add_new_exercise(request):
+    if request.method == "POST":
+        form = ExerciseForm(request.POST, request.FILES)
+        if form.is_valid():
+            # Extracting cleaned data from the form
+            exercise_name = form.cleaned_data["exercise_name"]
+            exercise_details = form.cleaned_data["exercise_details"]
+            exercise_image = form.cleaned_data["exercise_image"]
+            calories_burned_per_hour = form.cleaned_data["calories_burned_per_hour"]
+            added_by_user = form.cleaned_data["added_by_user"]
+            uploaded_by = form.cleaned_data["uploaded_by"]
+            target_body_part_ids = form.cleaned_data["target_body_part"]
+            type_id = form.cleaned_data["type"]
+
+            # Creating the Exercise instance
+            exercise = Exercise.objects.create(
+                exercise_name=exercise_name,
+                exercise_details=exercise_details,
+                exercise_image=exercise_image,
+                calories_burned_per_hour=calories_burned_per_hour,
+                added_by_user=added_by_user,
+                uploaded_by=uploaded_by,
+                type=ExerciseType.objects.get(id=type_id),
+            )
+
+            # Adding the related TargetBodyPart instances to the exercise
+            target_body_parts = TargetBodyPart.objects.filter(
+                id__in=target_body_part_ids
+            )
+            exercise.target_body_part.add(*target_body_parts)
+
+            return redirect("dashboard")  # Redirect to success URL
+    else:
+        form = ExerciseForm()
+    return render(request, "add_new_exercise.html", {"form": form})
+
+
+def add_new_food(request):
+    try:
+        if request.method == "POST":
+            form = FoodForm(request.POST, request.FILES)
+            if form.is_valid():
+                new_food = form.save(commit=False)
+                new_food.added_by_user = False
+                new_food.save()
+                messages.success(request, "Food added successfully")
+                return redirect("dashboard")  # Ensure you have a URL name 'food'
+            else:
+                messages.error(request, "Error adding food")
+                # Return the same page with form errors
+                return render(request, "add_new_food.html", {"form": form})
+        else:
+            form = FoodForm()
+            return render(request, "add_new_food.html", {"form": form})
+
+    except Exception as e:
+        print(e)
+        return HttpResponse("Error adding food")

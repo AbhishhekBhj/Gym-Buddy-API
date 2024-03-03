@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Food Item</title>
+  </head>
+  <body>
+    <form action="{%url 'add_new_food'%}" method="POST">
+      <h1>Add New Food Item</h1>
+      {{form.as_p}}
+      <button type="submit">Add Food Item</button>
+    </form>
+  </body>
+</html>

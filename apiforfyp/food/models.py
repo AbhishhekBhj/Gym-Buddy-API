@@ -10,7 +10,7 @@ class Food(models.Model):
     )
     food_calories_per_serving = models.FloatField(default=0.0, blank=False)
     food_serving_size = models.FloatField(default=0.0, blank=False)
-    food_protein_per_serving = models.FloatField(default=0.0, blank=False)
+    food_protein_per_servings = models.FloatField(default=0.0, blank=False)
     food_carbs_per_serving = models.FloatField(default=0.0, blank=False)
     food_fat_per_serving = models.FloatField(default=0.0, blank=False)
     added_by_user = models.BooleanField(default=False)

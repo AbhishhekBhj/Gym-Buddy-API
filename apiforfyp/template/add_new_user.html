@@ -8,11 +8,14 @@
   <body>
     <div class="addusercontainer">
       <h1>Add New User</h1>
-      <form method="POST" enctype="multipart/form-data" action="{% url 'register_new_user' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
+      <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{% url 'register_new_user' %}"
+      >
+        {% csrf_token %} {{ form.as_p }}
         <button type="submit" class="btn btn-success">Add User</button>
-    </form>
+      </form>
     </div>
   </body>
 </html>
