@@ -180,9 +180,26 @@ def delete_exercise(request, exercise_id):
         messages.success(request, "Item deleted successfully.")
     except Exercise.DoesNotExist:
         messages.error(request, "Item not found.")
+        return HttpResponse("Error Deleting Item.")
 
     # Redirect to the food page
     return redirect("exercises")
+
+
+@login_required
+def delete_user(request, user_id):
+    try:
+        # get user by id
+        user = get_object_or_404(CustomUser, id=user_id)
+
+        # delete the user
+        user.delete()
+
+    except CustomUser.DoesNotExist:
+        messages.error(request, "User not found.")
+        return HttpResponse("Error Deleting User.")
+
+    return redirect("users")
 
 
 @login_required
@@ -243,6 +260,7 @@ def edit_exercise(request, exercise_id):
     return render(request, "edit_exercise.html", {"form": form, "exercise": exercise})
 
 
+@login_required
 def edit_user(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     if request.method == "POST":
@@ -280,8 +298,43 @@ def edit_user(request, user_id):
     return render(request, "edit_user.html", {"form": form, "user": user})
 
 
+@login_required
+def edit_exercise(request, exercise_id):
+    exercise = Exercise.objects.get(pk=exercise_id)
+    if request.method == "POST":
+        form = ExerciseForm(request.POST, request.FILES)
+        if form.is_valid():
+            exercise.exercise_name = form.cleaned_data["exercise_name"]
+            exercise.exercise_details = form.cleaned_data["exercise_details"]
+            exercise.exercise_image = form.cleaned_data["exercise_image"]
+            exercise.calories_burned_per_hour = form.cleaned_data[
+                "calories_burned_per_hour"
+            ]
+            exercise.added_by_user = form.cleaned_data["added_by_user"]
+            exercise.uploaded_by = form.cleaned_data["uploaded_by"]
+            exercise.save()
+            return redirect("exercises")
+        else:
+            form = ExerciseForm(
+                initial={
+                    "exercise_name": exercise.exercise_name,
+                    "exercise_details": exercise.exercise_details,
+                    "exercise_image": exercise.exercise_image,
+                    "calories_burned_per_hour": exercise.calories_burned_per_hour,
+                    "added_by_user": exercise.added_by_user,
+                    "uploaded_by": exercise.uploaded_by,
+                }
+            )
+        return render(
+            request, "edit_exercise.html", {"form": form, "exercise": exercise}
+        )
+
+
+@login_required
 def view_profile(request, user_id):
     user = CustomUser.objects.get(id=user_id)
+    email = CustomUser.objects.get(id=user_id).email
+    request.session["email"] = email
     return render(request, "profile.html", {"user": user})
 
 
@@ -301,7 +354,7 @@ def register_new_user(request):
             messages.success(request, "User added successfully")
             return redirect("dashboard")  # Ensure you have a URL name 'dashboard'
         else:
-            print(request.data)
+
             messages.error(request, "Error adding user")
             # Return the same page with form errors
             return render(request, "add_new_user.html", {"form": form})
@@ -311,7 +364,7 @@ def register_new_user(request):
 
 
 def alter_user_details(request, username):
-    if request.method == "PATCH":
+    if request.method == "POST":
         form = EditUserDetailsForm(request.POST, request.FILES)
         if form.is_valid():
             user = CustomUser.objects.get(username=username)
@@ -402,3 +455,16 @@ def add_new_food(request):
     except Exception as e:
         print(e)
         return HttpResponse("Error adding food")
+
+
+def navigate_to_send_email(request):
+    email = request.session.get("email")
+    return render(request, "send_email.html", {"email": email})
+
+
+def naviagte_to_send_all_email(request):
+
+    return render(
+        request,
+        "send_mail_all.html",
+    )

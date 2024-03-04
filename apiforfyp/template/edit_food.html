@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Edit Food</h1>
-    <form action="/edit_food/" method="post">
+    <form action="{%url 'edit_food'%}" method="post">
         {% csrf_token %}
         <input type="hidden" name="id" value="{{ id }}">
         <input type="text" name="name" value="{{ name }}">

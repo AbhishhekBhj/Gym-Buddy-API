@@ -1,5 +1,6 @@
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
+from django.http import HttpResponse
 from .models import CustomUser
 from random import randint
 
@@ -43,7 +44,7 @@ def send_welcome_mail(email, username):
         print(f"An unexpected error occurred: {e}")
 
 
-def send_dummy_mail(email, subject,message):
+def send_dummy_mail(email, subject, message):
     try:
         email_from = settings.EMAIL_HOST_USER
         send_mail(subject, message, email_from, [email], fail_silently=False)
@@ -53,18 +54,31 @@ def send_dummy_mail(email, subject,message):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-def send_special_offers(email):
-    try:
-        subject = "Exclusive Special Offers Just for You!"
-        message = "Dear valued customer,\n\nWe're excited to offer you exclusive special offers available only for our loyal customers like you.\n\nVisit our website or app now to discover these amazing deals!\n\nBest regards,\nThe Team"
-        email_from = settings.EMAIL_HOST_USER
-        send_mail(subject, message, email_from, [email], fail_silently=False)
-        print("Special offers email sent successfully!")
 
-    except BadHeaderError as e:
-        print(f"Error sending email: {e}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+def send_special_offers(request, email):
+    if request.method == "POST":
+        subject = request.POST.get("subject", "Default Subject")
+        message = request.POST.get("message", "Default Message")
+
+        try:
+            email_from = settings.EMAIL_HOST_USER
+            send_mail(subject, message, email_from, [email], fail_silently=False)
+            return HttpResponse("Special offers email sent successfully!")
+        except BadHeaderError as e:
+            # Log the error
+            print(f"Error sending email: {e}")
+            return HttpResponse(
+                "Error sending email.", status=500
+            )  # Internal Server Error
+        except Exception as e:
+            # Log the error
+            print(f"An unexpected error occurred: {e}")
+            return HttpResponse(
+                "An unexpected error occurred.", status=500
+            )  # Internal Server Error
+    else:
+        # Method Not Allowed for other request methods
+        return HttpResponse("Method Not Allowed", status=405)  # Method Not Allowed
 
 
 def send_password_change_otp(email, username):
@@ -100,4 +114,32 @@ def send_password_change_otp(email, username):
         print(f"Error updating user object: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+        
+        
+        
+def send_mail_to_all_users(request):
+    if request.method == "POST":
+        subject = request.POST.get("subject", "Default Subject")
+        message = request.POST.get("message", "Default Message")
 
+        try:
+            email_from = settings.EMAIL_HOST_USER
+            all_users = CustomUser.objects.all()
+            for user in all_users:
+                send_mail(subject, message, email_from, [user.email], fail_silently=False)
+            return HttpResponse("Email sent successfully to all users!")
+        except BadHeaderError as e:
+            # Log the error
+            print(f"Error sending email: {e}")
+            return HttpResponse(
+                "Error sending email.", status=500
+            )  # Internal Server Error
+        except Exception as e:
+            # Log the error
+            print(f"An unexpected error occurred: {e}")
+            return HttpResponse(
+                "An unexpected error occurred.", status=500
+            )  # Internal Server Error
+    else:
+        # Method Not Allowed for other request methods
+        return HttpResponse("Method Not Allowed", status=405)  # Method Not Allowed

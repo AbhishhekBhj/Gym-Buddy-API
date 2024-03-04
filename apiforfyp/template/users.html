@@ -46,7 +46,7 @@
         <a href="{%url 'edit_user' user_id=user_data.id %}" title="Update">
           <i class="fas fa-edit"></i>
         </a>
-        <a href="#" title="Delete" onclick="deleteItem();">
+        <a href="{%url 'delete_user' user_id=user_data.id%}" title="Delete" >
           <i class="fas fa-trash-alt"></i>
         </a>
 

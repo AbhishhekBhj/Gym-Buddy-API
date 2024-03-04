@@ -18,7 +18,11 @@ from .views import (
     add_new_exercise,
     add_new_food,
     delete_exercise,
+    navigate_to_send_email,
+    naviagte_to_send_all_email,
+    delete_user,
 )
+from users.email import send_special_offers, send_mail_to_all_users
 
 urlpatterns = [
     path("login/", login, name="custom_login"),
@@ -27,6 +31,7 @@ urlpatterns = [
     path("exercises/", exercises, name="exercises"),
     path("food/", food, name="food"),
     path("delete_item/<int:item_id>/", delete_item, name="delete_item"),
+    path("delete_user/<int:user_id>/", delete_user, name="delete_user"),
     path("edit_item/<int:item_id>/", edit_food, name="edit_food"),
     path("edituser/<int:user_id>/", edit_user, name="edit_user"),
     path("viewprofile/<int:user_id>", view_profile, name="view_profile"),
@@ -43,4 +48,14 @@ urlpatterns = [
     path("add_new_exercise/", add_new_exercise, name="add_new_exercise"),
     path("add_new_food/", add_new_food, name="add_new_food"),
     path("deleteexercise/<int:exercise_id>/", delete_exercise, name="delete_exercise"),
+    path("sendoffermail/<str:email>/", send_special_offers, name="send_offer_mail"),
+    path(
+        "navigate_to_send_email/", navigate_to_send_email, name="navigate_to_send_email"
+    ),
+    path(
+        "naviagte_to_send_all_email/",
+        naviagte_to_send_all_email,
+        name="naviagte_to_send_all_email",
+    ),
+    path("sendemailtoall/", send_mail_to_all_users, name="send_mail_to_all_users"),
 ]

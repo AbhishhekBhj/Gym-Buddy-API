@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email All Users</title>
+    <link rel="stylesheet" href="{% static 'email.css'%}" />
+  </head>
+  <body>
+    <div class="container">
+      <h2>This Email Will Be Sent to all users</h2>
+      <form action="{%url 'send_mail_to_all_users'  %}" method="post">
+        {% csrf_token %}
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required />
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="10" required></textarea>
+
+        <button type="submit">Send Email</button>
+      </form>
+    </div>
+  </body>
+</html>
