@@ -114,9 +114,8 @@ def send_password_change_otp(email, username):
         print(f"Error updating user object: {e}")
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
-        
-        
-        
+
+
 def send_mail_to_all_users(request):
     if request.method == "POST":
         subject = request.POST.get("subject", "Default Subject")
@@ -126,7 +125,9 @@ def send_mail_to_all_users(request):
             email_from = settings.EMAIL_HOST_USER
             all_users = CustomUser.objects.all()
             for user in all_users:
-                send_mail(subject, message, email_from, [user.email], fail_silently=False)
+                send_mail(
+                    subject, message, email_from, [user.email], fail_silently=False,
+                )
             return HttpResponse("Email sent successfully to all users!")
         except BadHeaderError as e:
             # Log the error

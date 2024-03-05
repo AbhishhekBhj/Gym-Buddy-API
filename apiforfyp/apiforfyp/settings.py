@@ -66,6 +66,7 @@ CRON_CLASSES = [
     "apiforfyp.cron.MyCronJob",
 ]
 
+
 CRONJOBS = [
     "*/1 * * * * apiforfyp.cron.send_motivating_mails",
 ]
@@ -111,7 +112,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "apiforfyp.wsgi.application"
 
-
+# CELERY SETTINGS
+CELERY_BROKER_URL = "redis://127.0.0.1:6379"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
