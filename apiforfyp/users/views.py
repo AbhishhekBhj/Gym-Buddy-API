@@ -15,6 +15,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth.hashers import make_password
 from .models import CustomUser
 from rest_framework.permissions import IsAuthenticated
+from .email import send_welcome_mail
 
 # Create your views here.
 
@@ -145,6 +146,9 @@ class VerifyOTPAPI(APIView):
                 user = user.first()
                 user.is_verified = True
                 user.save()
+
+                send_welcome_mail(user.email, user.name)
+
                 return Response(
                     {
                         "status": 200,
@@ -387,6 +391,7 @@ class EditUserDetails(APIView):
                     "data": str(e),
                 },
             )
+
 
 class UserDeleteAccountView(APIView):
     """
