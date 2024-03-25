@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Body Measurement Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        li p {
+            margin: 5px 0;
+        }
+
+        li hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
+
+        li:last-child {
+            margin-bottom: 0;
+        }
+
+        .zero-value {
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <h1>Body Measurement Details</h1>
+    <ul>
+        {% for measurement in measurements %}
+        <li>
+            <p><strong>Measurement ID:</strong> {{ measurement.measurement_id }}</p>
+            <p><strong>User:</strong> {{ measurement.user }}</p>
+            <p><strong>Height:</strong> {% if measurement.height == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.height }} inches{% endif %}</p>
+            <p><strong>Weight:</strong> {% if measurement.weight == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.weight }} kilograms{% endif %}</p>
+            <p><strong>Chest Size:</strong> {% if measurement.chest_size == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.chest_size }} inches{% endif %}</p>
+            <p><strong>Waist Size:</strong> {% if measurement.waist_size == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.waist_size }} inches{% endif %}</p>
+            <p><strong>Hip Size:</strong> {% if measurement.hip_size == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.hip_size }} inches{% endif %}</p>
+            <p><strong>Left Arm:</strong> {% if measurement.left_arm == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.left_arm }} inches{% endif %}</p>
+            <p><strong>Right Arm:</strong> {% if measurement.right_arm == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.right_arm }} inches{% endif %}</p>
+            <p><strong>Left Quadricep:</strong> {% if measurement.left_quadricep == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.left_quadricep }} inches{% endif %}</p>
+            <p><strong>Right Quadricep:</strong> {% if measurement.right_quadricep == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.right_quadricep }} inches{% endif %}</p>
+            <p><strong>Left Calf:</strong> {% if measurement.left_calf == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.left_calf }} inches{% endif %}</p>
+            <p><strong>Right Calf:</strong> {% if measurement.right_calf == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.right_calf }} inches{% endif %}</p>
+            <p><strong>Left Forearm:</strong> {% if measurement.left_forearm == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.left_forearm }} inches{% endif %}</p>
+            <p><strong>Right Forearm:</strong> {% if measurement.right_forearm == 0 %}<span class="zero-value">Not provided</span>{% else %}{{ measurement.right_forearm }} inches{% endif %}</p>
+            <p><strong>Notes:</strong> {% if not measurement.notes %}<span class="zero-value">None</span>{% else %}{{ measurement.notes }}{% endif %}</p>
+            <p><strong>Created At:</strong> {{ measurement.created_at }}</p>
+            <p><strong>Updated At:</strong> {{ measurement.updated_at }}</p>
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

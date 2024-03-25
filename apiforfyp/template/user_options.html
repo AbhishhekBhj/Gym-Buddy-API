@@ -1,11 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Options</title>
-</head>
-<body>
-    
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User View Options</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .options-container {
+        text-align: center;
+      }
+
+      .option {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 10px;
+        display: inline-block;
+        width: 200px;
+        transition: transform 0.3s ease;
+      }
+
+      .option:hover {
+        transform: translateY(-5px);
+      }
+
+      /* Style anchor tags */
+      .option a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="options-container">
+      <div class="option">
+        <a href="{% url 'get_caloric_intake' id=id %}">See Caloric Intake</a>
+      </div>
+      <div class="option">
+        <a href="{% url 'get_workout_data' id=id %}">See Workouts</a>
+      </div>
+      <div class="option">
+        <a href="{% url 'get_user_measurements' id=id %}">See Measurements</a>
+      </div>
+      <div class="option">
+        <a href="{% url 'get_user_reminders' id=id %}">See Reminders</a>
+      </div>
+    </div>
+  </body>
 </html>

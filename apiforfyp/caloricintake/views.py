@@ -65,6 +65,7 @@ class CaloricIntakeGetView(APIView):
 
         try:
 
+                
             # get user from request
             user = request.user
             current_time = timezone.now()

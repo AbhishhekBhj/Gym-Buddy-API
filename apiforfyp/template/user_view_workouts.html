@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Workout Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px 0;
+        }
+
+        li p {
+            margin: 5px 0;
+        }
+
+        li hr {
+            border: none;
+            border-top: 1px solid #ccc;
+            margin: 10px 0;
+        }
+
+        li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Workout Details</h1>
+    <ul>
+        {% for workout in workouts %}
+        <li>
+            {% comment %} <p><strong>Workout ID:</strong> {{ workout.workout_id }}</p> {% endcomment %}
+            <p><strong>Exercise:</strong> {{ workout.exercise_id }}</p>
+            <p><strong>Username:</strong> {{ workout.username }}</p>
+            <p><strong>Started At:</strong> {{ workout.started_at }}</p>
+            <p><strong>Ended At:</strong> {{ workout.ended_at }}</p>
+            <p><strong>Sets:</strong> {{ workout.sets }}</p>
+            <p><strong>Reps:</strong> {{ workout.reps }}</p>
+            <p><strong>Weight:</strong> {{ workout.weight }}</p>
+            <p><strong>Volume:</strong> {{ workout.volume }}</p>
+            <p><strong>Created At:</strong> {{ workout.created_at }}</p>
+            <p><strong>Updated At:</strong> {{ workout.updated_at }}</p>
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

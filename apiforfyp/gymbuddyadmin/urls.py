@@ -1,5 +1,9 @@
 from django.urls import path
 from .views import (
+    get_caloric_intake,
+    get_user_measurements,
+    get_user_reminders,
+    get_workout_data,
     login,
     adminlogin,
     userpage,
@@ -21,7 +25,9 @@ from .views import (
     navigate_to_send_email,
     naviagte_to_send_all_email,
     delete_user,
+    navigate_to_user_view_options,
 )
+from .graphs import generate_bar_chart
 from users.email import send_special_offers, send_mail_to_all_users
 
 urlpatterns = [
@@ -58,4 +64,18 @@ urlpatterns = [
         name="naviagte_to_send_all_email",
     ),
     path("sendemailtoall/", send_mail_to_all_users, name="send_mail_to_all_users"),
+    path(
+        "navigate_to_user_view_options/<int:id>/",
+        navigate_to_user_view_options,
+        name="navigate_to_user_view_options",
+    ),
+    path("get_caloric_intake/<int:id>", get_caloric_intake, name="get_caloric_intake"),
+    path("get_workout_data/<int:id>", get_workout_data, name="get_workout_data"),
+    path(
+        "get_user_measurements/<int:id>",
+        get_user_measurements,
+        name="get_user_measurements",
+    ),
+    path("get_user_reminders/<int:id>", get_user_reminders, name="get_user_reminders"),
+    path("generate_bar_chart/", generate_bar_chart, name="generate_bar_chart"),
 ]

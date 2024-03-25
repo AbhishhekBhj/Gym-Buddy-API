@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
+
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.http import HttpResponse
 from users.models import CustomUser
@@ -9,6 +10,11 @@ from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .forms import EditUserDetailsForm, AddNewUserForm, FoodForm, ExerciseForm
+from django.http import HttpResponse
+from caloricintake.models import CaloricIntake
+from logworkout.models import Workout
+from logmeasurements.models import BodyMeasurement
+from reminders.models import Reminder
 
 
 def adminlogin(request):
@@ -468,3 +474,34 @@ def naviagte_to_send_all_email(request):
         request,
         "send_mail_all.html",
     )
+
+
+def navigate_to_user_view_options(request, id):
+
+    return render(request, "user_options.html", {"id": id})
+
+
+def get_caloric_intake(request, id):
+    caloric_intakes = CaloricIntake.objects.filter(username=id)
+    return render(
+        request, "user_view_caloricintake.html", {"caloric_intakes": caloric_intakes}
+    )
+
+
+def get_workout_data(request, id):
+    workouts = Workout.objects.filter(username=id)
+    return render(request, "user_view_workouts.html", {"workouts": workouts})
+
+
+def get_user_measurements(request, id):
+    measurements = BodyMeasurement.objects.filter(user=id)
+    return render(
+        request, "user_view_measurements.html", {"measurements": measurements}
+    )
+
+
+def get_user_reminders(request, id):
+    reminders = Reminder.objects.filter(user=id)
+    return render(request, "user_view_reminders.html", {"reminders": reminders})
+
+

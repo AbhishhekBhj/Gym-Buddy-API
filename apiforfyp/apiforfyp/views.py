@@ -46,7 +46,7 @@ class HomePageAPIView(APIView):
 
         # Instantiate the WorkoutGetView and call its get method
         workout_view = WorkoutGetView()
-        workout_data = workout_view.get(request, user=user)
+        workout_data = workout_view.post(request)
 
         # Instantiate the WaterIntakeGetView and call its get method
         water_intake_view = WaterIntakeGetView()

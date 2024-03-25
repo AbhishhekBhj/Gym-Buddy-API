@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caloric Intake</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      li {
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin: 10px 0;
+      }
+
+      li p {
+        margin: 5px 0;
+      }
+
+      li hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 10px 0;
+      }
+
+      li:last-child {
+        margin-bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Caloric Intake</h1>
+    <a href="{% url 'generate_bar_chart' %}">View Graph</a> 
+    <ul>
+      {% for caloric_intake in caloric_intakes %}
+      <li>
+        <p><strong>Username:</strong> {{ caloric_intake.username }}</p>
+        <p>
+          <strong>Food Consumed:</strong> {{ caloric_intake.food_consumed }}
+        </p>
+        <p>
+          <strong>Calories Consumed:</strong> {{caloric_intake.calories_consumed}}
+        </p>
+        <p>
+          <strong>Serving Consumed:</strong> {{ caloric_intake.serving_consumed}}
+        </p>
+        <p>
+          <strong>Protein Consumed:</strong> {{ caloric_intake.protein_consumed}}
+        </p>
+        <p>
+          <strong>Carbs Consumed:</strong> {{ caloric_intake.carbs_consumed }}
+        </p>
+        <p>
+          <strong>Fats Consumed:</strong> {{ caloric_intake.fats_consumed }}
+        </p>
+        <p><strong>Timestamp:</strong> {{ caloric_intake.timestamp }}</p>
+        <p><strong>Created At:</strong> {{ caloric_intake.created_at }}</p>
+        <p><strong>Updated At:</strong> {{ caloric_intake.updated_at }}</p>
+        <hr />
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
