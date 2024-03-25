@@ -3,27 +3,28 @@ from django.conf import settings
 from django.http import HttpResponse
 from .models import CustomUser
 from random import randint
+from .models import OTP
 
 
 def send_otp(email):
     try:
-        subject = f"🎁 Special Delivery: Your Account Verification Code!"
+        # Generate OTP
         otp = randint(100000, 999999)
+
+        # Compose email message
+        subject = f"🎁 Special Delivery: Your Account Verification Code!"
         message = f"Hello there!\n\nWelcome to My Gym Buddy - your ultimate fitness companion! 🏋️‍♂️\n\nThank you for choosing us to help you on your fitness journey. Your One-Time Password (OTP) for account verification is: {otp}.\n\nWe're pumped to have you on board! Use this OTP to confirm your account and start sweating it out with our amazing features.\n\nIf you didn't request this OTP, no worries - simply ignore this message.\n\nStay motivated and keep pushing your limits!\n\nBest regards,\nThe My Gym Buddy Team"
 
         email_from = settings.EMAIL_HOST
         send_mail(subject, message, email_from, [email], fail_silently=False)
 
-        user_obj = CustomUser.objects.get(email=email)
-        user_obj.otp = otp
-        user_obj.save()
+        OTP.objects.create(email=email, otp_code=otp)
 
-    except BadHeaderError as e:
-        print(f"Error sending email: {e}")
-    except CustomUser.DoesNotExist as e:
-        print(f"Error updating user object: {e}")
+        return otp
+
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(f"Error sending email or generating OTP: {e}")
+        return None
 
 
 def send_welcome_mail(email, username):
@@ -126,7 +127,11 @@ def send_mail_to_all_users(request):
             all_users = CustomUser.objects.all()
             for user in all_users:
                 send_mail(
-                    subject, message, email_from, [user.email], fail_silently=False,
+                    subject,
+                    message,
+                    email_from,
+                    [user.email],
+                    fail_silently=False,
                 )
             return HttpResponse("Email sent successfully to all users!")
         except BadHeaderError as e:

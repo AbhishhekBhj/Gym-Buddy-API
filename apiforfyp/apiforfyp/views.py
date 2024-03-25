@@ -50,7 +50,7 @@ class HomePageAPIView(APIView):
 
         # Instantiate the WaterIntakeGetView and call its get method
         water_intake_view = WaterIntakeGetView()
-        water_intake_data = water_intake_view.get(request)
+        water_intake_data = water_intake_view.get(request, user=user)
 
         reminder_view = RemindersGetAPIView()
         reminder_set_data = reminder_view.get(request, user=user)

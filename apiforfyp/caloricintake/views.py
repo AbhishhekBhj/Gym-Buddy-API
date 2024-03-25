@@ -157,25 +157,43 @@ class EditCaloricIntakeObjectDetails(APIView):
 
 
 class CaloricIntakeObjectDeleteView(APIView):
-    def delete(self, request, intake_id):
+    def post(self, request):
         try:
-            # get object with id
+            # Extract intake_id from request data
+            intake_id = request.data.get("intake_id")
+            if not intake_id:
+                return Response(
+                    {
+                        "status": 400,
+                        "message": "Intake ID not provided in request data",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            # Get object with id
             food_instance = CaloricIntake.objects.get(id=intake_id)
+            calories_consumed = (
+                food_instance.calories_consumed
+            )  # Extract calories_consumed value
             food_instance.delete()
+
             return Response(
                 {
                     "status": 200,
                     "message": "Caloric Intake Object Deleted",
-                }
+                    "calories_consumed": calories_consumed,
+                },
+                status=status.HTTP_200_OK,
             )
 
-        # if caloric intake not found
+        # If caloric intake not found
         except CaloricIntake.DoesNotExist:
             return Response(
                 {
                     "status": 404,
                     "message": "Caloric Intake Object Not Found",
-                }
+                },
+                status=status.HTTP_404_NOT_FOUND,
             )
 
         except Exception as e:
@@ -184,5 +202,6 @@ class CaloricIntakeObjectDeleteView(APIView):
                     "status": 500,
                     "message": "Internal Server Error",
                     "data": str(e),
-                }
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

@@ -54,7 +54,7 @@ class UserRegistrationView(APIView):
                 user = serializer.save()
                 user.set_password(serializer.validated_data["password"])
                 user.save()
-                send_otp(serializer.data["email"])
+                # send_otp(serializer.data["email"])
 
                 return Response(
                     {
@@ -84,76 +84,134 @@ class UserRegistrationView(APIView):
             )
 
 
-# @csrf_exempt
-# class LoginView(APIView):
-#     authentication_classes = [TokenAuthentication]
+# class VerifyOTPAPI(APIView):
+#     """
+#     API view for verifying OTP.
 
-#     @api_view(["POST"])
+#     Methods:
+#     - post: Verifies the OTP provided by the user.
+
+#     Attributes:
+#     - serializer: Instance of OTPVerificationSerializer class for validating the request data.
+#     - email: Email address extracted from the validated serializer data.
+#     - otp: OTP extracted from the validated serializer data.
+#     - user: Queryset of CustomUser objects filtered by email.
+#     """
+
 #     def post(self, request):
-#         user = authenticate(
-#             username=request.data["username"], password=request.data["password"]
-#         )
+#         try:
+#             serializer = OTPVerificationSerializer(data=request.data)
 
-#         if user:
-#             token, created = Token.objects.get_or_create(user=user)
-#             return Response({"token": token.key})
-#         else:
+#             if serializer.is_valid():
+#                 email = serializer.data["email"]
+#                 otp = serializer.data["otp"]
+
+#                 user = CustomUser.objects.filter(email=email)
+#                 if not user.exists():
+#                     return Response(
+#                         {
+#                             "status": 400,
+#                             "message": "Something went wrong",
+#                             "data": "invalid email",
+#                         }
+#                     )
+#                 if user[0].otp != otp:
+#                     return Response(
+#                         {
+#                             "status": 400,
+#                             "message": "Something went wrong",
+#                             "data": "invalid otp",
+#                         }
+#                     )
+
+#                 user = user.first()
+#                 user.is_verified = True
+#                 user.save()
+
+#                 send_welcome_mail(user.email, user.name)
+
+#                 return Response(
+#                     {
+#                         "status": 200,
+#                         "message": "OTP verified successfully",
+#                         "data": (),
+#                     }
+#                 )
+#         except Exception as e:
+#             print(e)
 #             return Response(
-#                 {"error": "Wrong Credentials"}, status=status.HTTP_404_NOT_FOUND
+#                 {
+#                     "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+#                     "message": "Internal Server Error",
+#                     "data": str(e),
+#                 }
+#             )
+
+
+# class ResendOTPView(APIView):
+#     """
+#     API view for resending OTP.
+
+#     This view handles the POST request to resend the OTP (One-Time Password)
+#     to the specified email address. It expects the email address in the request
+#     data and sends the OTP to that email address using the `send_otp` function.
+
+#     If the request data is valid and the OTP is sent successfully, it returns
+#     a JSON response with a status code of 200, a success message, and the
+#     serialized data.
+
+#     If any exception occurs during the process, it returns a JSON response
+#     with a status code of 500, an error message, and the exception details.
+#     """
+
+#     def post(self, request):
+#         try:
+#             data = request.data
+#             serializer = ResendOTPSerializer(data=data)
+#             if serializer.is_valid():
+#                 email = serializer.data["email"]
+#                 send_otp(email)
+#                 return Response(
+#                     {
+#                         "status": 200,
+#                         "message": "OTP sent successfully",
+#                         "data": serializer.data,
+#                     }
+#                 )
+#         except Exception as e:
+#             print(e)
+#             return Response(
+#                 {
+#                     "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+#                     "message": "Internal Server Error",
+#                     "data": str(e),
+#                 }
 #             )
 
 
 class VerifyOTPAPI(APIView):
-    """
-    API view for verifying OTP.
-
-    Methods:
-    - post: Verifies the OTP provided by the user.
-
-    Attributes:
-    - serializer: Instance of OTPVerificationSerializer class for validating the request data.
-    - email: Email address extracted from the validated serializer data.
-    - otp: OTP extracted from the validated serializer data.
-    - user: Queryset of CustomUser objects filtered by email.
-    """
-
     def post(self, request):
         try:
             serializer = OTPVerificationSerializer(data=request.data)
-
             if serializer.is_valid():
                 email = serializer.data["email"]
                 otp = serializer.data["otp"]
 
-                user = CustomUser.objects.filter(email=email)
-                if not user.exists():
+                # Retrieve stored OTP from the database
+                stored_otp_obj = OTP.objects.filter(email=email).last()
+                if stored_otp_obj is None or stored_otp_obj.otp_code != otp:
                     return Response(
-                        {
-                            "status": 400,
-                            "message": "Something went wrong",
-                            "data": "invalid email",
-                        }
-                    )
-                if user[0].otp != otp:
-                    return Response(
-                        {
-                            "status": 400,
-                            "message": "Something went wrong",
-                            "data": "invalid otp",
-                        }
+                        {"status": 400, "message": "Invalid OTP", "data": None}
                     )
 
-                user = user.first()
-                user.is_verified = True
-                user.save()
-
-                send_welcome_mail(user.email, user.name)
+                # Proceed with user verification
+                # (You may choose to register the user or perform any other actions here)
 
                 return Response(
                     {
                         "status": 200,
                         "message": "OTP verified successfully",
-                        "data": (),
+                        "data": None,
                     }
                 )
         except Exception as e:
@@ -166,21 +224,9 @@ class VerifyOTPAPI(APIView):
                 }
             )
 
-
 class ResendOTPView(APIView):
     """
     API view for resending OTP.
-
-    This view handles the POST request to resend the OTP (One-Time Password)
-    to the specified email address. It expects the email address in the request
-    data and sends the OTP to that email address using the `send_otp` function.
-
-    If the request data is valid and the OTP is sent successfully, it returns
-    a JSON response with a status code of 200, a success message, and the
-    serialized data.
-
-    If any exception occurs during the process, it returns a JSON response
-    with a status code of 500, an error message, and the exception details.
     """
 
     def post(self, request):
@@ -189,19 +235,28 @@ class ResendOTPView(APIView):
             serializer = ResendOTPSerializer(data=data)
             if serializer.is_valid():
                 email = serializer.data["email"]
-                send_otp(email)
-                return Response(
-                    {
-                        "status": 200,
-                        "message": "OTP sent successfully",
-                        "data": serializer.data,
-                    }
-                )
+                otp = send_otp(email)
+                if otp:
+                    return Response(
+                        {
+                            "status": 200,
+                            "message": "OTP sent successfully",
+                            "data": {"email": email, "otp": otp},
+                        }
+                    )
+                else:
+                    return Response(
+                        {
+                            "status": 500,
+                            "message": "Failed to send OTP",
+                            "data": {"email": email},
+                        }
+                    )
         except Exception as e:
             print(e)
             return Response(
                 {
-                    "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    "status": 500,
                     "message": "Internal Server Error",
                     "data": str(e),
                 }

@@ -33,8 +33,10 @@ class WorkoutView(APIView):
                     }
                 )
 
-        except:
-            return Response({"status": 500, "message": "Internal Server Error"})
+        except Exception as e:
+            return Response(
+                {"status": 500, "message": "Internal Server Error", "error": e}
+            )
 
 
 class WorkoutGetView(APIView):

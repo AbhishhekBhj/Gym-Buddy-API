@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from .serializers import WaterIntakeSerializer
 from rest_framework.views import APIView
 from .models import WaterIntake
+from django.utils import timezone
+from rest_framework.permissions import IsAuthenticated
+
 
 # Create your views here.
 # class WaterIntakeView:
@@ -27,10 +30,25 @@ class WaterIntakeGetView(APIView):
     Returns:
     - Response: A response object containing the fetched water intake records.
     """
-    def get(self, request):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user):
         try:
-            waterintake = WaterIntake.objects.all()
-            serializer = WaterIntakeSerializer(waterintake, many=True)
+
+            user = request.user
+            current_time = timezone.now()
+
+            if user.is_pro_member:
+                queryset = WaterIntake.objects.filter(user=user).all()
+
+            else:
+
+                fifteen_days_ago = current_time - timezone.timedelta(days=15)
+                queryset = WaterIntake.objects.filter(timestamp__gte=fifteen_days_ago)
+
+            serializer = WaterIntakeSerializer(queryset, many=True)
+
             return Response(
                 {
                     "message": "Water intake fetched successfully",
@@ -83,8 +101,8 @@ class WaterIntakeView(APIView):
                     "status": status.HTTP_400_BAD_REQUEST,
                 }
             )
-            
-            
+
+
 class EditWaterIntakeObjectDetails(APIView):
     """
     API view for editing the details of a water intake object.
@@ -133,22 +151,36 @@ class EditWaterIntakeObjectDetails(APIView):
                     "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
                 }
             )
-            
-            
+
+
 class DeleteWaterIntakeObject(APIView):
     """
     API view for deleting a water intake object.
     """
 
-    def delete(self, request, intake_id):
+    def delete(self, request):
         try:
+
+            intake_id = request.data.get("intake_id")
+
+            if not intake_id:
+                return Response(
+                    {
+                        "message": "Intake ID not provided",
+                        "status": status.HTTP_400_BAD_REQUEST,
+                    }
+                )
+
             # get object with id
             water_instance = WaterIntake.objects.get(id=intake_id)
+            water_consumed = water_instance.volume
+
             water_instance.delete()
             return Response(
                 {
                     "message": "Water Intake Object Deleted",
                     "status": status.HTTP_200_OK,
+                    "water_consumed": -water_consumed,
                 }
             )
 
