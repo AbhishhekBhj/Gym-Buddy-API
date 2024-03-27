@@ -350,10 +350,11 @@ class UploadProfilePicture(APIView):
     - post: Handles the POST request for uploading a profile picture.
     """
 
-    def post(self, request, user):
+    def post(self, request):
         try:
+            user = request.data.get("user_id")
             # Retrieve the user instance based on the username provided in the URL
-            user_instance = CustomUser.objects.get(username=user)
+            user_instance = CustomUser.objects.get(id=user)
 
             # Access the user's profile_picture field
             profile_picture = request.data.get("profile_picture")
@@ -368,7 +369,7 @@ class UploadProfilePicture(APIView):
                         "status": 200,
                         "message": "Profile Picture uploaded successfully",
                         "data": {
-                            "profile_picture": user_instance.profile_picture.url,  # Assuming profile_picture is a FileField
+                            "profile_picture": user_instance.profile_picture.url,  
                         },
                     }
                 )
