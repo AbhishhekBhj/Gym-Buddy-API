@@ -183,6 +183,7 @@ class ExerciseTypeView(APIView):
 class UploadCustomExercise(APIView):
     def post(self, request, user):
         try:
+            
             user_instance = CustomUser.objects.get(username=user)
 
             exercise_data = request.data

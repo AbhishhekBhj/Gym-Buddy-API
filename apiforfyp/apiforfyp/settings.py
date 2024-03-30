@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "apiforfyp",
     "customroutine",
     "food",
+    "payements",
     "users",
     "userdata",
     "meditationintake",

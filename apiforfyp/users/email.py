@@ -6,6 +6,31 @@ from random import randint
 from .models import OTP
 
 
+
+def send_forget_password_otp(email):
+    try:
+        # Generate OTP
+        otp = randint(100000, 999999)
+
+        # Compose email message
+        subject = f"🔒 Password Reset OTP"
+        message = f"Hello there!\n\nWe've received a request to reset your password. Your One-Time Password (OTP) for password reset is: {otp}.\n\nIf you didn't request this OTP, no worries - simply ignore this message.\n\nStay safe and secure!\n\nBest regards,\nThe My Gym Buddy Team"
+
+        email_from = settings.EMAIL_HOST
+        send_mail(subject, message, email_from, [email], fail_silently=False)
+
+        OTP.objects.create(email=email, otp_code=otp)
+
+        return otp
+    
+    except Exception as e:
+        print(f"Error sending email or generating OTP: {e}")
+        return None
+
+
+
+
+
 def send_otp(email):
     try:
         # Generate OTP

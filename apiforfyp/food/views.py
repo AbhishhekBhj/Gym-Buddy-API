@@ -79,10 +79,15 @@ class FoodView:
 
 
 class AddCustomFoodItem(APIView):
-    def post(self, request, user):
+    def post(self, request):
         try:
-            user_instance = CustomUser.objects.get(username=user)
-            food_data = request.data
+            user_id = request.data.get("user_id")
+            user_instance = CustomUser.objects.get(id=user_id)
+
+            # Create a mutable copy of request.data
+            food_data = request.data.copy()
+
+            # Modify the copy
             food_data["added_by_user"] = True
             food_data["uploaded_by"] = user_instance.id
 
@@ -90,15 +95,16 @@ class AddCustomFoodItem(APIView):
 
             if serializer.is_valid():
                 if not user_instance.is_pro_member:
-                    if user_instance.number_of_customfoods >= 2:
+                    if user_instance.number_of_customfood >= 2:
                         return Response(
                             {
                                 "status": 400,
                                 "message": "Free users can only upload 2 custom foods",
+                                "data": "Upgrade to pro to upload more custom foods",
                             }
                         )
 
-                user_instance.number_of_customfoods += 1
+                user_instance.number_of_customfood += 1
                 user_instance.save()
                 serializer.save()
                 return Response(
@@ -125,6 +131,3 @@ class AddCustomFoodItem(APIView):
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-
-

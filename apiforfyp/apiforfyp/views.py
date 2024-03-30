@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from users.serializers import ForgetPasswordSerializer
 from exercise.views import ExerciseView
 from logworkout.views import WorkoutGetView
 from waterintake.views import WaterIntakeGetView
@@ -15,6 +16,8 @@ from .serializers import TokenObtainLifetimeSerializer, TokenRefreshLifetimeSeri
 from users.models import CustomUser
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import logout
+from users.email import send_forget_password_otp
+from django.core.exceptions import ValidationError
 
 
 class HomePageAPIView(APIView):
@@ -156,3 +159,93 @@ def home(request):
 def logouts(request):
     logout(request)
     return redirect("custom_login")
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        try:
+            email = request.data.get("email")
+            serializer = ForgetPasswordSerializer(data=request.data)
+            user = CustomUser.objects.get(email=email)
+
+            if user:
+
+                otp = send_forget_password_otp(email)
+                return Response(
+                    {
+                        "status": status.HTTP_200_OK,
+                        "message": "OTP sent successfully",
+                        "data": {"otp": otp, "email": email},
+                    }
+                )
+
+            else:
+                return Response(
+                    {
+                        "status": status.HTTP_400_BAD_REQUEST,
+                        "message": "User not found",
+                    }
+                )
+        except CustomUser.DoesNotExist:
+            return Response(
+                {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "User not found",
+                }
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": "An error occurred",
+                }
+            )
+
+
+class ChangePasswordWithOTPView(APIView):
+    def patch(self, request):
+        try:
+            email = request.data.get("email")
+            user = CustomUser.objects.get(email=email)
+            password = request.data.get("password")
+
+            if password is None:
+                raise ValidationError("Password cannot be empty")
+
+            user.password = make_password(password)
+            user.save()
+
+            return Response(
+                {
+                    "status": status.HTTP_200_OK,
+                    "message": "Password changed successfully",
+                }
+            )
+
+        except CustomUser.DoesNotExist:
+            return Response(
+                {
+                    "status": status.HTTP_404_NOT_FOUND,
+                    "message": "User not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        except ValidationError as e:
+            return Response(
+                {
+                    "status": status.HTTP_400_BAD_REQUEST,
+                    "message": str(e),
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except Exception as e:
+            return Response(
+                {
+                    "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    "message": "An error occurred",
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )

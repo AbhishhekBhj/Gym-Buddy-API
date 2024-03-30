@@ -21,11 +21,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt import views as jwt_views
 from .views import (
+    ForgotPasswordView,
     HomePageAPIView,
     PasswordCheckAPIView,
     ChangePasswordAPIView,
     TokenObtainPairView,
     TokenRefreshView,
+    ChangePasswordWithOTPView,
     home,
     logouts as logot,
 )
@@ -40,6 +42,8 @@ urlpatterns = [
         view=logot,
         name="logout",
     ),
+    path("api/resetpassword/", view=ChangePasswordWithOTPView.as_view()),
+    path("api/forgotpassword/", view=ForgotPasswordView.as_view()),
     path("api/password/post/<str:user>/", view=PasswordCheckAPIView.as_view()),
     path("api/password/change/<str:user>/", view=ChangePasswordAPIView.as_view()),
     path("api/home/<str:user>/", view=HomePageAPIView.as_view()),

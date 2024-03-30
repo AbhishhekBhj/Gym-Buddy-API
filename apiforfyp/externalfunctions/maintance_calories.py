@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 class UserRelatedFunction(APIView):
 
     def calculate_maintance_calories(age, gender, weight, height, activity_level):
+        
+         
         """
         Calculate the maintance calories of a user using haris-benedict equation
         """

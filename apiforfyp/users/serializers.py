@@ -43,3 +43,12 @@ class LoginSerializer(serializers.Serializer):
     class Meta:
         model = CustomUser
         fields = ("username", "password")
+        
+        
+        
+class ForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        model = CustomUser
+        fields = ("email",)
