@@ -31,10 +31,12 @@ from .views import (
     home,
     logouts as logot,
 )
+from gymbuddyadmin.views import render_please_login
 
 from externalfunctions.maintance_calories import UserRelatedFunction
 
 urlpatterns = [
+    path("accounts/login/", render_please_login, name="render_please_login"),
     path("admin/", admin.site.urls),
     path("", view=home, name="home"),
     path(

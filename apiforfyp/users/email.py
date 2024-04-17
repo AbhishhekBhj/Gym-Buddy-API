@@ -4,7 +4,8 @@ from django.http import HttpResponse
 from .models import CustomUser
 from random import randint
 from .models import OTP
-
+import asyncio
+from apiforfyp.tasks import send_special_offers
 
 
 def send_forget_password_otp(email):
@@ -22,13 +23,10 @@ def send_forget_password_otp(email):
         OTP.objects.create(email=email, otp_code=otp)
 
         return otp
-    
+
     except Exception as e:
         print(f"Error sending email or generating OTP: {e}")
         return None
-
-
-
 
 
 def send_otp(email):
@@ -104,7 +102,7 @@ def send_special_offers(request, email):
             )  # Internal Server Error
     else:
         # Method Not Allowed for other request methods
-        return HttpResponse("Method Not Allowed", status=405)  # Method Not Allowed
+        return HttpResponse("Method Not Allowed", status=405)
 
 
 def send_password_change_otp(email, username):
@@ -168,9 +166,6 @@ def send_mail_to_all_users(request):
         except Exception as e:
             # Log the error
             print(f"An unexpected error occurred: {e}")
-            return HttpResponse(
-                "An unexpected error occurred.", status=500
-            )  # Internal Server Error
+            return HttpResponse("An unexpected error occurred.", status=500)
     else:
-        # Method Not Allowed for other request methods
         return HttpResponse("Method Not Allowed", status=405)  # Method Not Allowed

@@ -4,6 +4,8 @@ from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .manager import CustomUserManager
+from django.utils import timezone
+from dateutil.relativedelta import relativedelta
 
 
 # Create your models here.
@@ -44,8 +46,54 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-
 class OTP(models.Model):
     email = models.EmailField()
     otp_code = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    subscription_type = models.CharField(
+        max_length=20,
+        choices=[
+            ("1", "Monthly"),
+            ("2", "6 Monthly"),
+            ("3", "Yearly"),
+        ],
+    )
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField()
+
+    @property
+    def is_pro_member(self):
+        return self.end_date is not None and self.end_date > timezone.now()
+
+    def activate_subscription(self):
+        print(f"Before activation: End Date - {self.end_date}")
+        if self.subscription_type == "1":
+            if self.end_date:
+                self.end_date += relativedelta(months=1)  # Extend by one month
+            else:
+                self.end_date = timezone.now() + relativedelta(
+                    months=1
+                )  # Set initial end date to one month from now
+        elif self.subscription_type == "2":
+            if self.end_date:
+                self.end_date += relativedelta(months=6)  # Extend by six months
+            else:
+                self.end_date = timezone.now() + relativedelta(
+                    months=6
+                )  
+        elif self.subscription_type == "3":
+            if self.end_date:
+                self.end_date += relativedelta(years=1)  # Extend by one year
+            else:
+                self.end_date = timezone.now() + relativedelta(
+                    years=1
+                )  
+
+        print(f"After activation: End Date - {self.end_date}")
+
+        self.save()
+        return f"Subscription extended till {self.end_date} by {self.subscription_type} for user {self.user.username}"

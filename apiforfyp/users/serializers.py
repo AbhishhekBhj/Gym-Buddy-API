@@ -19,6 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class UserDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = "__all__"
+
+
 class OTPVerificationSerializer(serializers.Serializer):
     email = serializers.EmailField()
     otp = serializers.CharField()
@@ -43,9 +49,8 @@ class LoginSerializer(serializers.Serializer):
     class Meta:
         model = CustomUser
         fields = ("username", "password")
-        
-        
-        
+
+
 class ForgetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
 

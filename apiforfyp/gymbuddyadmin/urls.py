@@ -26,19 +26,30 @@ from .views import (
     naviagte_to_send_all_email,
     delete_user,
     navigate_to_user_view_options,
+    render_edit_page,
+    render_edit_exercise_page,
+    edit_exercise,
+    render_please_login,
 )
 from .graphs import generate_bar_chart
 from users.email import send_special_offers, send_mail_to_all_users
 
 urlpatterns = [
+    path("edit_exercise/<int:item_id>", edit_exercise, name="edit_exercise"),
+    path(
+        "render_exercise_edit_page/<int:item_id>",
+        render_edit_exercise_page,
+        name="render_exercise_edit_page",
+    ),
     path("login/", login, name="custom_login"),
     path("performlogin/", adminlogin, name="performlogin"),
     path("users/", userpage, name="users"),
     path("exercises/", exercises, name="exercises"),
     path("food/", food, name="food"),
+    path("render_edit_page/<int:item_id>", render_edit_page, name="render_edit_page"),
     path("delete_item/<int:item_id>/", delete_item, name="delete_item"),
     path("delete_user/<int:user_id>/", delete_user, name="delete_user"),
-    path("edit_item/<int:item_id>/", edit_food, name="edit_food"),
+    path("edit_food/<int:item_id>/", edit_food, name="edit_food"),
     path("edituser/<int:user_id>/", edit_user, name="edit_user"),
     path("viewprofile/<int:user_id>", view_profile, name="view_profile"),
     path("dashboard/", dashboard, name="dashboard"),

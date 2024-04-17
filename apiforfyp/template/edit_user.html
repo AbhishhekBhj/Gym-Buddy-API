@@ -4,37 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit User</title>
-    <style>
-      h1 {
-        text-align: center;
-        background-color: black;
-        display: inline-block;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-      }
-
-      #submit {
-        background-color: black;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-
-      form {
-        text-align: center;
-      }
-    </style>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <form
-      method="POST"
-      action="{% url 'alter_user_details' username=user.username %}"
-    >
-      <h1>Edit User {{ user.username }}</h1>
-      {% comment %} {% csrf_token %} {% endcomment %} {{ form.as_p }}
-      <input type="submit" value="Update" id="submit" />
-    </form>
+    <div class="container">
+      <form
+        method="POST"
+        action="{% url 'alter_user_details' username=user.username %}"
+        class="text-center"
+      >
+        <h1 class="bg-dark text-white py-2 px-4 d-inline-block rounded">
+          Edit User {{ user.username }}
+        </h1>
+        {% comment %} {% csrf_token %} {% endcomment %} {{ form.as_p }}
+        <input type="submit" value="Update" class="btn btn-dark mt-3" />
+      </form>
+    </div>
   </body>
 </html>

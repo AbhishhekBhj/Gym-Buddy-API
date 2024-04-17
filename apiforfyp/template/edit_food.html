@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit</title>
-</head>
-<body>
-    <h1>Edit Food</h1>
-    <form action="{%url 'edit_food'%}" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="id" value="{{ id }}">
-        <input type="text" name="name" value="{{ name }}">
-        <input type="text" name="price" value="{{ price }}">
-        <input type="text" name="description" value="{{ description }}">
-        <input type="text" name="image" value="{{ image }}">
-        <input type="submit" value="Edit">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Food Here</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="mb-4">Edit Food</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %} {{ form}}
+      <p>{{item_id}}</p>
+      <button type="submit" class="btn btn-primary">Edit Food</button>
     </form>
-</body>
+  </body>
 </html>

@@ -28,7 +28,7 @@
           <th>Added by User</th>
 
           <th>Image</th>
-          <th>Action</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -55,11 +55,9 @@
           <td>No Image</td>
           {% endif %}
           <td>
-            {% comment %}
-            <a href="{% url 'edit_food' item_id=id %}"
+            <a href="{% url 'render_edit_page' item_id=food_data.id %}"
               ><i class="fas fa-edit"></i
             ></a>
-            {% endcomment %}
 
             <a href="{% url 'delete_item' item_id=food_data.id %}"
               ><i class="fas fa-trash-alt"></i>

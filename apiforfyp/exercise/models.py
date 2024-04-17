@@ -25,7 +25,7 @@ class Exercise(models.Model):
         upload_to="exercise_images/", blank=True, null=True
     )
     target_body_part = models.ManyToManyField(TargetBodyPart)
-    type = models.ForeignKey(ExerciseType, on_delete=models.CASCADE, default=1)
+    type = models.ForeignKey(ExerciseType, on_delete=models.CASCADE, default=2)
     calories_burned_per_hour = models.IntegerField(blank=False, default=100)
     added_by_user = models.BooleanField(default=False)
     uploaded_by = models.CharField(max_length=100, blank=True, null=True)

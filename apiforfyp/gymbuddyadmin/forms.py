@@ -1,6 +1,6 @@
 from django import forms
 from users.models import CustomUser
-from exercise.models import Exercise
+from exercise.models import Exercise, ExerciseType
 from food.models import Food
 
 
@@ -71,44 +71,64 @@ class AddNewUserForm(forms.ModelForm):
         ]
 
 
-class ExerciseForm(forms.Form):
-    TARGET_BODY_PART_CHOICES = [
-        (1, "Front Delts"),
-        (2, "Rear Delts"),
-        (3, "Quadriceps"),
-        (4, "Hamstring"),
-        (5, "Glutes Maximus"),
-        (6, "Lower Back"),
-        (7, "Lats"),
-        (8, "Chest"),
-        (9, "Forearms"),
-        (10, "Biceps"),
-        (11, "Triceps"),
-        (12, "Calves"),
-        (13, "Abs"),
-    ]
+class ExerciseForm(forms.ModelForm):
+    class Meta:
+        model = Exercise
+        fields = [
+            "exercise_name",
+            "exercise_details",
+            "exercise_image",
+            "target_body_part",
+            "type",
+            "calories_burned_per_hour",
+            "added_by_user",
+            "uploaded_by",
+        ]
+        widgets = {
+            "type": forms.Select(attrs={"class": "form-control"}),
+            "exercise_details": forms.Textarea(attrs={"rows": 10, "cols": 15}),
+            "target_body_part": forms.CheckboxSelectMultiple(),
+        }
 
-    Type = [
-        (1, "Cardiovascular"),
-        (2, "Yoga"),
-        (3, "Strength Training"),
-        (4, "Combat Sports"),
-    ]
 
-    exercise_name = forms.CharField(max_length=100)
-    exercise_details = forms.CharField(widget=forms.Textarea)
-    exercise_image = forms.ImageField()
-    target_body_part = forms.MultipleChoiceField(
-        choices=TARGET_BODY_PART_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
-        required=True,
-    )
-    type = forms.ChoiceField(choices=Type)
-    calories_burned_per_hour = forms.IntegerField()
-    added_by_user = forms.BooleanField(required=False)
-    uploaded_by = forms.CharField(max_length=100, required=False)
+class AddNewExerciseForm(forms.ModelForm):
+    class Meta:
+        model = Exercise
+        fields = [
+            "exercise_name",
+            "exercise_details",
+            "exercise_image",
+            "target_body_part",
+            "type",
+            "calories_burned_per_hour",
+            "added_by_user",
+            "uploaded_by",
+        ]
+        widgets = {
+            "type": forms.RadioSelect(),
+            "exercise_details": forms.Textarea(attrs={"rows": 10, "cols": 15}),
+            "target_body_part": forms.CheckboxSelectMultiple(),
+        }
+
 
 class FoodForm(forms.ModelForm):
+    class Meta:
+        model = Food
+        fields = [
+            "food_name",
+            "food_image",
+            "food_description",
+            "food_serving_size",
+            "food_protein_per_servings",
+            "food_calories_per_serving",
+            "food_carbs_per_serving",
+            "food_fat_per_serving",
+            "added_by_user",
+            "uploaded_by",
+        ]
+
+
+class EditFoodForm(forms.ModelForm):
     class Meta:
         model = Food
         fields = [

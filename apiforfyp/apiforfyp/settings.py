@@ -14,6 +14,11 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 from datetime import timedelta
+from firebase_admin import initialize_app 
+
+
+
+Firebase_app = initialize_app()
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -86,6 +91,8 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
 
 # LOGOUT_REDIRECT_URL = "/login/"
 
@@ -216,3 +223,9 @@ EMAIL_HOST_USER = os.environ.get("HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("HOST_PASSWORD")
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+
+FCM_DJANGO_SETTINGS = {
+    
+    
+}

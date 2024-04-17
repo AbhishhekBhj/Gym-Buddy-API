@@ -1,19 +1,12 @@
-from users.models import CustomUser
+from celery import shared_task
 from django.core.mail import send_mail
+from django.conf import settings
 
-from celery import task
-from celery.utils.log import get_task_logger
-
-
-
-logger = get_task_logger(__name__)
-
-
-@task
-def send_mail_to_all_users():
-    users = CustomUser.objects.all()
-    users_email =[]
-    for user in users:
-        users_email.append(user.email)
-        
-        
+@shared_task
+def send_special_offers(email, subject, message):
+    try:
+        email_from = settings.EMAIL_HOST_USER
+        send_mail(subject, message, email_from, [email], fail_silently=False)
+        print("Special offers email sent successfully!")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")

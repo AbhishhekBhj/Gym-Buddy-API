@@ -9,7 +9,14 @@ from food.serializers import FoodSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import EditUserDetailsForm, AddNewUserForm, FoodForm, ExerciseForm
+from .forms import (
+    AddNewExerciseForm,
+    EditUserDetailsForm,
+    AddNewUserForm,
+    FoodForm,
+    ExerciseForm,
+    EditFoodForm,
+)
 from django.http import HttpResponse
 from caloricintake.models import CaloricIntake
 from logworkout.models import Workout
@@ -208,62 +215,91 @@ def delete_user(request, user_id):
     return redirect("users")
 
 
-@login_required
-def edit_food(request):
-    if request.method == "POST":
-        # Process form submission
-        food_id = request.POST.get("id")
-        food = Food.objects.get(pk=food_id)
-        food.food_name = request.POST.get("name")
-        food.food_price = request.POST.get("price")
-        food.food_description = request.POST.get("description")
-        food.food_image = request.POST.get("image")
-        food.save()
-        return redirect("list_foods")  # Redirect to the food list page after editing
-    else:
-        # Render edit form
-        food_id = request.GET.get("id")
-        food = Food.objects.get(pk=food_id)
-        context = {
-            "id": food.id,
-            "name": food.food_name,
-            "price": food.food_price,
-            "description": food.food_description,
-            "image": food.food_image.url if food.food_image else "",
-        }
-        return render(request, "edit_food.html", context)
-
-
-@login_required
-def edit_exercise(request, exercise_id):
-    exercise = Exercise.objects.get(pk=exercise_id)
-    if request.method == "POST":
-        form = ExerciseForm(request.POST, request.FILES)
-        if form.is_valid():
-            exercise.exercise_name = form.cleaned_data["exercise_name"]
-            exercise.exercise_details = form.cleaned_data["exercise_details"]
-            exercise.exercise_image = form.cleaned_data["exercise_image"]
-            exercise.calories_burned_per_hour = form.cleaned_data[
-                "calories_burned_per_hour"
-            ]
-            exercise.added_by_user = form.cleaned_data["added_by_user"]
-            exercise.uploaded_by = form.cleaned_data["uploaded_by"]
-            exercise.save()
-            return redirect("exercises")
-
-    else:
-        form = ExerciseForm(
-            initial={
-                "exercise_name": exercise.exercise_name,
-                "exercise_details": exercise.exercise_details,
-                "exercise_image": exercise.exercise_image,
-                "calories_burned_per_hour": exercise.calories_burned_per_hour,
-                "added_by_user": exercise.added_by_user,
-                "uploaded_by": exercise.uploaded_by,
-            }
+def render_edit_page(request, item_id):
+    try:
+        food = Food.objects.get(id=item_id)
+        if request.method == "POST":
+            form = EditFoodForm(request.POST, request.FILES, instance=food)
+            if form.is_valid():
+                form.save()
+                return redirect("render_edit_page", item_id=item_id)
+        else:
+            form = EditFoodForm(instance=food)
+        return render(
+            request, "edit_food.html", {"form": form, "food": food, "item_id": item_id}
         )
+    except Food.DoesNotExist:
+        return render(request, "error.html", {"error_message": "Food item not found."})
+    except Exception as e:
+        return render(request, "error.html", {"error_message": str(e)})
 
-    return render(request, "edit_exercise.html", {"form": form, "exercise": exercise})
+
+# @login_required
+# def edit_food(request, item_id):
+#     if request.method == "POST":
+#         # Process form submission
+#         food_id = item_id
+#         food = Food.objects.get(pk=food_id)
+#         food.food_name = request.POST.get("name")
+#         food.food_price = request.POST.get("price")
+#         food.food_description = request.POST.get("description")
+#         food.food_image = request.POST.get("image")
+#         food.save()
+#         return redirect("list_foods")  # Redirect to the food list page after editing
+#     else:
+#         # Render edit form
+#         food = Food.objects.get(pk=item_id)
+#         context = {
+#             "id": food.id,
+#             "name": food.food_name,
+#             "price": food.food_price,
+#             "description": food.food_description,
+#             "image": food.food_image.url if food.food_image else "",
+#         }
+#         return render(request, "edit_food.html", context)
+
+
+@login_required
+def edit_food(request, item_id):
+    food = Food.objects.get(id=item_id)
+    if request.method == "POST":
+        form = EditFoodForm(request.POST, request.FILES)
+        if form.is_valid():
+            food.food_name = form.cleaned_data["food_name"]
+            food.food_image = form.cleaned_data["food_image"]
+            food.food_description = form.cleaned_data["food_description"]
+            food.food_serving_size = form.cleaned_data["food_serving_size"]
+            food.food_protein_per_servings = form.cleaned_data[
+                "food_protein_per_servings"
+            ]
+            food.food_calories_per_serving = form.cleaned_data[
+                "food_calories_per_serving"
+            ]
+            food.food_carbs_per_serving = form.cleaned_data["food_carbs_per_serving"]
+            food.food_fat_per_serving = form.cleaned_data["food_fat_per_serving"]
+            food.added_by_user = form.cleaned_data["added_by_user"]
+            food.uploaded_by = form.cleaned_data["uploaded_by"]
+            food.save()
+            return redirect("render_edit_page")
+        else:
+            form = EditFoodForm(
+                initial={
+                    "food_name": food.food_name,
+                    "food_image": food.food_image,
+                    "food_description": food.food_description,
+                    "food_serving_size": food.food_serving_size,
+                    "food_protein_per_servings": food.food_protein_per_servings,
+                    "food_calories_per_serving": food.food_calories_per_serving,
+                    "food_carbs_per_serving": food.food_carbs_per_serving,
+                    "food_fat_per_serving": food.food_fat_per_serving,
+                    "added_by_user": food.added_by_user,
+                    "uploaded_by": food.uploaded_by,
+                }
+            )
+
+        return render(
+            request, "edit_food.html", {"form": form, "food": food, "item_id": item_id}
+        )
 
 
 @login_required
@@ -305,35 +341,67 @@ def edit_user(request, user_id):
 
 
 @login_required
-def edit_exercise(request, exercise_id):
-    exercise = Exercise.objects.get(pk=exercise_id)
-    if request.method == "POST":
-        form = ExerciseForm(request.POST, request.FILES)
-        if form.is_valid():
-            exercise.exercise_name = form.cleaned_data["exercise_name"]
-            exercise.exercise_details = form.cleaned_data["exercise_details"]
-            exercise.exercise_image = form.cleaned_data["exercise_image"]
-            exercise.calories_burned_per_hour = form.cleaned_data[
-                "calories_burned_per_hour"
-            ]
-            exercise.added_by_user = form.cleaned_data["added_by_user"]
-            exercise.uploaded_by = form.cleaned_data["uploaded_by"]
-            exercise.save()
-            return redirect("exercises")
+def render_edit_exercise_page(request, item_id):
+    try:
+        exercise = Exercise.objects.get(pk=item_id)
+        if request.method == "POST":
+            form = ExerciseForm(request.POST, request.FILES, instance=exercise)
+            if form.is_valid():
+                form.save()
+                return redirect("exercises")
         else:
-            form = ExerciseForm(
-                initial={
-                    "exercise_name": exercise.exercise_name,
-                    "exercise_details": exercise.exercise_details,
-                    "exercise_image": exercise.exercise_image,
-                    "calories_burned_per_hour": exercise.calories_burned_per_hour,
-                    "added_by_user": exercise.added_by_user,
-                    "uploaded_by": exercise.uploaded_by,
-                }
-            )
+            form = ExerciseForm(instance=exercise)
         return render(
-            request, "edit_exercise.html", {"form": form, "exercise": exercise}
+            request,
+            "edit_exercise.html",
+            {"form": form, "exercise": exercise, "item_id": item_id},
         )
+    except Exercise.DoesNotExist:
+        return render(request, "error.html", {"error_message": "Exercise not found."})
+    except Exception as e:
+        return render(request, "error.html", {"error_message": str(e)})
+
+
+@login_required
+def edit_exercise(request, item_id):
+    try:
+        exercise = Exercise.objects.get(exercise_id=item_id)
+
+        if request.method == "POST":
+            form = ExerciseForm(request.POST, request.FILES)
+            if form.is_valid():
+                exercise.exercise_name = form.cleaned_data["exercise_name"]
+                exercise.exercise_details = form.cleaned_data["exercise_details"]
+                exercise.exercise_image = form.cleaned_data["exercise_image"]
+                exercise.calories_burned_per_hour = form.cleaned_data[
+                    "calories_burned_per_hour"
+                ]
+                exercise.added_by_user = form.cleaned_data["added_by_user"]
+                exercise.uploaded_by = form.cleaned_data["uploaded_by"]
+                exercise.save()
+                return redirect("exercises")
+            else:
+                form = ExerciseForm(
+                    initial={
+                        "exercise_name": exercise.exercise_name,
+                        "exercise_details": exercise.exercise_details,
+                        "exercise_image": exercise.exercise_image,
+                        "calories_burned_per_hour": exercise.calories_burned_per_hour,
+                        "added_by_user": exercise.added_by_user,
+                        "uploaded_by": exercise.uploaded_by,
+                    }
+                )
+            return render(
+                request, "edit_exercise.html", {"form": form, "exercise": exercise}
+            )
+        else:
+
+            return HttpResponse("Method not allowed", status=405)
+    except Exercise.DoesNotExist:
+        return HttpResponse("Exercise not found", status=404)
+    except Exception as e:
+        print(e)
+        return render(request, "error.html", {"error": str(e)})
 
 
 @login_required
@@ -371,24 +439,28 @@ def register_new_user(request):
 
 def alter_user_details(request, username):
     if request.method == "POST":
-        form = EditUserDetailsForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = CustomUser.objects.get(username=username)
-            user.username = form.cleaned_data["username"]
-            user.name = form.cleaned_data["name"]
-            user.email = form.cleaned_data["email"]
-            user.fitness_level = form.cleaned_data["fitness_level"]
-            user.fitness_goal = form.cleaned_data["fitness_goal"]
-            user.age = form.cleaned_data["age"]
-            user.height = form.cleaned_data["height"]
-            user.weight = form.cleaned_data["weight"]
-            user.is_verified = form.cleaned_data["is_verified"]
-            user.is_pro_member = form.cleaned_data["is_pro_member"]
-            user.save()
-            return redirect("profile", user_id=user.id)
+        try:
 
-        else:
-            return HttpResponse("Invalid form data")
+            user = CustomUser.objects.get(username=username)
+
+            form = EditUserDetailsForm(request.POST, request.FILES, instance=user)
+
+            if form.is_valid():
+                # Save the form data without checking uniqueness constraints
+                form.save(commit=False)
+                form.save()
+
+                return redirect("view_profile", user_id=user.id)
+            else:
+
+                print(form.errors)
+                return HttpResponse(f"Invalid form data{form.errors}")
+
+        except CustomUser.DoesNotExist:
+            return HttpResponse("User not found")
+        except Exception as e:
+
+            return HttpResponse(f"An error occurred: {str(e)}")
     else:
         return HttpResponse("Invalid request method")
 
@@ -399,45 +471,29 @@ def navigate_to_add_food(request):
 
 
 def navigate_to_add_exercise(request):
-    form = ExerciseForm()
+    form = AddNewExerciseForm()
     return render(request, "add_new_exercise.html", {"form": form})
 
 
 def add_new_exercise(request):
-    if request.method == "POST":
-        form = ExerciseForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Extracting cleaned data from the form
-            exercise_name = form.cleaned_data["exercise_name"]
-            exercise_details = form.cleaned_data["exercise_details"]
-            exercise_image = form.cleaned_data["exercise_image"]
-            calories_burned_per_hour = form.cleaned_data["calories_burned_per_hour"]
-            added_by_user = form.cleaned_data["added_by_user"]
-            uploaded_by = form.cleaned_data["uploaded_by"]
-            target_body_part_ids = form.cleaned_data["target_body_part"]
-            type_id = form.cleaned_data["type"]
+    try:
+        if request.method == "POST":
+            form = ExerciseForm(request.POST, request.FILES)
+            if form.is_valid():
+                exercise = form.save(commit=False)
+                exercise.type = form.cleaned_data[
+                    "type"
+                ]  # Assign the ExerciseType object
+                exercise.save()  # Assign the ID to the type_id field
 
-            # Creating the Exercise instance
-            exercise = Exercise.objects.create(
-                exercise_name=exercise_name,
-                exercise_details=exercise_details,
-                exercise_image=exercise_image,
-                calories_burned_per_hour=calories_burned_per_hour,
-                added_by_user=added_by_user,
-                uploaded_by=uploaded_by,
-                type=ExerciseType.objects.get(id=type_id),
-            )
+                return redirect("dashboard")
+        else:
+            form = ExerciseForm()
+        return render(request, "add_new_exercise.html", {"form": form})
 
-            # Adding the related TargetBodyPart instances to the exercise
-            target_body_parts = TargetBodyPart.objects.filter(
-                id__in=target_body_part_ids
-            )
-            exercise.target_body_part.add(*target_body_parts)
-
-            return redirect("dashboard")  # Redirect to success URL
-    else:
-        form = ExerciseForm()
-    return render(request, "add_new_exercise.html", {"form": form})
+    except Exception as e:
+        print(e)
+        return render(request, "error.html", {"error_message": str(e)})
 
 
 def add_new_food(request):
@@ -505,3 +561,5 @@ def get_user_reminders(request, id):
     return render(request, "user_view_reminders.html", {"reminders": reminders})
 
 
+def render_please_login(request):
+    return render(request, "please_login.html")

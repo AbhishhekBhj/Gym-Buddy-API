@@ -8,8 +8,8 @@
       <th>Exercise Description</th>
       <th>Calories Burned Per Hour</th>
       <th>Exercise Image</th>
-      <th>Added By User</th>
-      <th>Uploaded By</th>
+      <th>Type</th>
+
       <th>Actions</th>
     </tr>
   </thead>
@@ -32,8 +32,8 @@
       {% else %}
       <td>No Image</td>
       {% endif %}
-      <td>{{ exercise_data.added_by_user }}</td>
-      <td>{{ exercise_data.uploaded_by }}</td>
+      <td>{{ exercise_data.type }}</td>
+
       <td>
         <a
           href="{% url 'delete_exercise' exercise_id=exercise_data.exercise_id %}"
@@ -42,7 +42,10 @@
       </td>
 
       <td>
-        <a href="#">Edit</a>
+        <a
+          href="{% url 'render_exercise_edit_page' item_id=exercise_data.exercise_id%}"
+          >Edit</a
+        >
       </td>
     </tr>
 

@@ -8,6 +8,8 @@ from .views import (
     UploadProfilePicture,
     EditUserDetails,
     UserDeleteAccountView,
+    MakeMeProUser,
+    GetUserData
 )
 
 
@@ -22,6 +24,8 @@ urlpatterns = [
         view=UploadProfilePicture.as_view(),
         name="uploadprofile",
     ),
-    path("editprofile/<str:user>/", view=EditUserDetails.as_view(), name="editprofile"),
+    path("editprofile/", view=EditUserDetails.as_view(), name="editprofile"),
     path("delete/<int:user>/", view=UserDeleteAccountView.as_view(), name="deleteuser"),
+    path("makemeprouser/", view=MakeMeProUser.as_view(), name="makemeprouser"),
+    path("getuserdata/", view=GetUserData.as_view(), name="getuserdata"),
 ]

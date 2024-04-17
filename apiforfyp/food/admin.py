@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Food
-from users.models import CustomUser
+from users.models import CustomUser, Subscription, OTP
 from exercise.models import *
 from logworkout.models import *
 from waterintake.models import *
@@ -25,3 +25,5 @@ admin.site.register(CaloricIntake)
 admin.site.register(BodyMeasurement)
 admin.site.register(CustomRoutine)
 admin.site.register(Routine)
+admin.site.register(Subscription)
+admin.site.register(OTP)

@@ -7,6 +7,7 @@ from .serializers import (
     UserSerializer,
     OTPVerificationSerializer,
     LoginSerializer,
+    UserDataSerializer,
 )
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -16,6 +17,8 @@ from django.contrib.auth.hashers import make_password
 from .models import CustomUser
 from rest_framework.permissions import IsAuthenticated
 from .email import send_welcome_mail
+from users.models import Subscription
+from django.utils import timezone
 
 # Create your views here.
 
@@ -118,6 +121,7 @@ class VerifyOTPAPI(APIView):
                     "data": str(e),
                 }
             )
+
 
 class ResendOTPView(APIView):
     """
@@ -264,7 +268,7 @@ class UploadProfilePicture(APIView):
                         "status": 200,
                         "message": "Profile Picture uploaded successfully",
                         "data": {
-                            "profile_picture": user_instance.profile_picture.url,  
+                            "profile_picture": user_instance.profile_picture.url,
                         },
                     }
                 )
@@ -306,9 +310,11 @@ class EditUserDetails(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def patch(self, request, user):
+    def patch(self, request):
+
         try:
-            user_instance = CustomUser.objects.get(username=user)
+            user = request.data.get("user_id")
+            user_instance = CustomUser.objects.get(id=user)
             data = request.data
             serializer = UserSerializer(user_instance, data=data, partial=True)
             if serializer.is_valid():
@@ -371,6 +377,97 @@ class UserDeleteAccountView(APIView):
                     "message": "User deleted successfully",
                 }
             )
+        except CustomUser.DoesNotExist:
+            return Response(
+                {
+                    "status": 404,
+                    "message": "User not found",
+                }
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "status": 500,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                },
+            )
+
+
+class MakeMeProUser(APIView):
+    def post(self, request):
+        try:
+            user_id = request.data.get("user_id")
+            subscription_type = request.data.get("subscription_type")
+            user_instance = CustomUser.objects.get(id=user_id)
+
+            # Create a new subscription or add duration to existing subscription
+            try:
+                subscription = Subscription.objects.get(
+                    user=user_instance, subscription_type=subscription_type
+                )
+                subscription.activate_subscription()
+                subscription.save()  # Add duration to existing subscription
+            except Subscription.DoesNotExist:
+                # Create a new subscription if it doesn't exist
+                subscription = Subscription(
+                    user=user_instance, subscription_type=subscription_type
+                )
+                subscription.activate_subscription()
+
+            # Update user's is_pro_member status
+            user_instance.is_pro_member = True
+            user_instance.save()
+
+            return Response(
+                {
+                    "status": 200,
+                    "message": "User is now a pro member",
+                    "data": {
+                        "is_pro_member": True,
+                        "end_date": subscription.end_date,
+                        "start_date": subscription.start_date,
+                        "subscription_type": subscription.subscription_type,
+                    },
+                }
+            )
+
+        except CustomUser.DoesNotExist:
+            return Response(
+                {
+                    "status": status.HTTP_404_NOT_FOUND,
+                    "message": "User not found",
+                }
+            )
+
+        except Exception as e:
+            print(e)
+            return Response(
+                {
+                    "status": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    "message": "Internal Server Error",
+                    "data": str(e),
+                }
+            )
+
+
+class GetUserData(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            user_id = request.data.get("user_id")
+            user_instance = CustomUser.objects.get(id=user_id)
+            serializer = UserDataSerializer(user_instance)
+
+            return Response(
+                {
+                    "status": 200,
+                    "message": "User data retrieved successfully",
+                    "data": serializer.data,
+                }
+            )
+
         except CustomUser.DoesNotExist:
             return Response(
                 {

@@ -17,6 +17,7 @@
       <th>Is Verfied</th>
       <th>Profile Picture</th>
       <th>Is Pro Member</th>
+      <th>Password</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -34,6 +35,7 @@
 
       <td>{{ user_data.is_verified }}</td>
 
+
       {%if user_data.profile_picture%}
       <td>
         <img src="{{ user_data.profile_picture.url }}" alt="Profile Picture"  width="140" height="140"/>
@@ -42,6 +44,9 @@
       <td>No Image</td>
       {% endif %}
       <td>{{ user_data.is_pro_member }}</td>
+
+      <td>{{user_data.password}}</td>
+
       <td>
         <a href="{%url 'edit_user' user_id=user_data.id %}" title="Update">
           <i class="fas fa-edit"></i>
