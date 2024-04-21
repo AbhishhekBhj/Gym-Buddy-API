@@ -20,8 +20,6 @@ class CaloricIntakeView(APIView):
     Requires authentication for all requests.
     """
 
-    permission_classes = [IsAuthenticated]
-
     def post(self, request):
         try:
             serializer = CaloricIntakeSerializers(data=request.data)
@@ -65,7 +63,6 @@ class CaloricIntakeGetView(APIView):
 
         try:
 
-                
             # get user from request
             user = request.user
             current_time = timezone.now()

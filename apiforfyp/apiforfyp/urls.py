@@ -59,6 +59,7 @@ urlpatterns = [
     path("api/meditation/", include("meditationintake.urls")),
     path("api/measurements/", include("logmeasurements.urls")),
     path("api/export/", include("userdata.urls")),
+    path("api/meals/", include("custommeal.urls")),
     # path(
     #     "api/token/", jwt_views.TokenObtainPairView.as_view(), name="token_obtain_pair"
     # ),

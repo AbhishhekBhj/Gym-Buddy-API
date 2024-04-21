@@ -23,6 +23,7 @@ from .views import (
     add_new_food,
     delete_exercise,
     navigate_to_send_email,
+    render_push_notificatoin,
     naviagte_to_send_all_email,
     delete_user,
     navigate_to_user_view_options,
@@ -30,6 +31,7 @@ from .views import (
     render_edit_exercise_page,
     edit_exercise,
     render_please_login,
+    render_subscription_page,
 )
 from .graphs import generate_bar_chart
 from users.email import send_special_offers, send_mail_to_all_users
@@ -89,4 +91,15 @@ urlpatterns = [
     ),
     path("get_user_reminders/<int:id>", get_user_reminders, name="get_user_reminders"),
     path("generate_bar_chart/", generate_bar_chart, name="generate_bar_chart"),
+    path("render_please_login/", render_please_login, name="render_please_login"),
+    path(
+        "render_subscription_page/",
+        render_subscription_page,
+        name="render_subscription_page",
+    ),
+    path(
+        "render_push_notificatoin/",
+        render_push_notificatoin,
+        name="render_push_notificatoin",
+    ),
 ]

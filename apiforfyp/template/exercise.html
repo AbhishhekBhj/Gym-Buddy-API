@@ -1,5 +1,53 @@
 {% extends 'base.html' %} {% block content %}
 <!-- Your specific page content goes here -->
+
+<style>
+  /* Search bar styles */
+  .search-container {
+    margin-bottom: 20px; /* Add some space between the search bar and the table */
+    display: flex;
+    justify-content: center;
+  }
+
+  .search-input {
+    width: 300px;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+  }
+
+  .search-input:focus {
+    border-color: #007bff;
+  }
+
+  .search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 25px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .search-button:hover {
+    background-color: #0056b3;
+  }
+
+  .search-button i {
+    font-size: 20px;
+  }
+</style>
+
+<div class="search-container">
+  <input type="text" class="search-input" placeholder="Search..." />
+  <button type="submit" class="search-button">
+    <i class="fas fa-search"></i>
+  </button>
+</div>
 <table>
   <thead>
     <tr>

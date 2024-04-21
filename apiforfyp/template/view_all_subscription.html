@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pro Membership Users</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f7f7f7;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 800px;
+        padding: 40px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+      }
+      .user-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      .user-list li {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .user-list li:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+      .user-name {
+        font-weight: bold;
+        color: #333;
+        text-transform: capitalize;
+      }
+      .membership-date {
+        color: #666;
+        font-size: 14px;
+        opacity: 0.8;
+      }
+      .view-profile-link {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none; /* Remove underline from anchor tag */
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Pro Membership Users</h1>
+      <ul class="user-list">
+        {% for sub in subscriptions %}
+        <li>
+          <div>
+            <span class="user-name">{{ sub.user.username }}</span>
+            <span class="membership-date"
+              >Bought pro membership on {{ sub.start_date|date:"F d, Y" }}</span
+            >
+            <span class="membership-date"
+              >Expires on {{ sub.end_date|date:"F d, Y" }}</span
+            >
+          </div>
+          <a
+            href="{%url 'view_profile' user_id=sub.user.id  %}"
+            class="view-profile-link"
+            >View Profile</a
+          >
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </body>
+</html>

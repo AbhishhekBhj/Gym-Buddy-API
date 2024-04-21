@@ -82,18 +82,17 @@ class Subscription(models.Model):
             if self.end_date:
                 self.end_date += relativedelta(months=6)  # Extend by six months
             else:
-                self.end_date = timezone.now() + relativedelta(
-                    months=6
-                )  
+                self.end_date = timezone.now() + relativedelta(months=6)
         elif self.subscription_type == "3":
             if self.end_date:
                 self.end_date += relativedelta(years=1)  # Extend by one year
             else:
-                self.end_date = timezone.now() + relativedelta(
-                    years=1
-                )  
+                self.end_date = timezone.now() + relativedelta(years=1)
 
         print(f"After activation: End Date - {self.end_date}")
 
         self.save()
         return f"Subscription extended till {self.end_date} by {self.subscription_type} for user {self.user.username}"
+
+    def __str__(self):
+        return self.user.username

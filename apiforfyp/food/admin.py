@@ -9,6 +9,7 @@ from reminders.models import *
 from caloricintake.models import *
 from logmeasurements.models import *
 from customroutine.models import CustomRoutine, Routine
+from custommeal.models import *
 
 # Register your models here.
 
@@ -27,3 +28,5 @@ admin.site.register(CustomRoutine)
 admin.site.register(Routine)
 admin.site.register(Subscription)
 admin.site.register(OTP)
+admin.site.register(MealPlan)
+admin.site.register(MealPlanFood)

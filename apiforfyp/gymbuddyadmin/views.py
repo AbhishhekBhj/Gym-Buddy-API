@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.http import HttpResponse
-from users.models import CustomUser
+from users.models import CustomUser, Subscription
 from exercise.models import Exercise, TargetBodyPart, ExerciseType
 from food.models import Food
 from food.serializers import FoodSerializer
@@ -563,3 +563,15 @@ def get_user_reminders(request, id):
 
 def render_please_login(request):
     return render(request, "please_login.html")
+
+
+def render_subscription_page(request):
+    subscriptions = Subscription.objects.all()
+
+    return render(
+        request, "view_all_subscription.html", {"subscriptions": subscriptions}
+    )
+
+
+def render_push_notificatoin(request):
+    return render(request, "push_notification.html")
