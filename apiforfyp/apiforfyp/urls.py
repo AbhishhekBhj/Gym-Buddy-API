@@ -73,6 +73,7 @@ urlpatterns = [
         view=UserRelatedFunction.calculate_maintance_calories,
     ),
     path("api/workoutroutine/", include("customroutine.urls")),
+    path("api/feedback/", include("feedback.urls")),
 ]
 
 if settings.DEBUG:

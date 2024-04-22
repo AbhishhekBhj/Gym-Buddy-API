@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import (
+from .views import (render_see_allFeedbacks,
     get_caloric_intake,
     get_user_measurements,
     get_user_reminders,
     get_workout_data,
     login,
     adminlogin,
+    render_see_allFeedbacks,
     userpage,
     exercises,
     food,
@@ -32,6 +33,7 @@ from .views import (
     edit_exercise,
     render_please_login,
     render_subscription_page,
+    
 )
 from .graphs import generate_bar_chart
 from users.email import send_special_offers, send_mail_to_all_users
@@ -43,6 +45,7 @@ urlpatterns = [
         render_edit_exercise_page,
         name="render_exercise_edit_page",
     ),
+    path("see_all_feedbacks/", render_see_allFeedbacks, name="see_all_feedbacks"),
     path("login/", login, name="custom_login"),
     path("performlogin/", adminlogin, name="performlogin"),
     path("users/", userpage, name="users"),

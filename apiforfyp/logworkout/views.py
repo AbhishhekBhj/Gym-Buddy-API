@@ -60,14 +60,16 @@ class WorkoutGetView(APIView):
 
             # check if user is a pro member
             if user.is_pro_member:
-                # if pro send all data
-                queryset = Workout.objects.filter(username=user).all()
+                # if pro send all data sorted by date
+                queryset = (
+                    Workout.objects.filter(username=user).order_by("-created_at").all()
+                )
             else:
-                # if not pro member get data from the last 15 days
+                # if not pro member get data from the last 15 days sorted by date
                 fifteen_days_ago = current_time - datetime.timedelta(days=15)
                 queryset = Workout.objects.filter(
                     username=user, created_at__gte=fifteen_days_ago
-                )
+                ).order_by("-created_at")
 
             serializer = WorkoutSerializer(queryset, many=True)
             return Response(

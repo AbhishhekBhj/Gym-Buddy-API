@@ -9,6 +9,7 @@ from food.serializers import FoodSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from feedback.models import FeedBack
 from .forms import (
     AddNewExerciseForm,
     EditUserDetailsForm,
@@ -575,3 +576,9 @@ def render_subscription_page(request):
 
 def render_push_notificatoin(request):
     return render(request, "push_notification.html")
+
+
+def render_see_allFeedbacks(request):
+    feedbacks = FeedBack.objects.all()
+
+    return render(request, "see_user_feedbacks.html", {"feedbacks": feedbacks})

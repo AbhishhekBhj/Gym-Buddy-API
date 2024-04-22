@@ -2,6 +2,7 @@ from django.shortcuts import redirect, render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from feedback.models import FeedBack
 from users.serializers import ForgetPasswordSerializer
 from exercise.views import ExerciseView
 from logworkout.views import WorkoutGetView
@@ -249,3 +250,5 @@ class ChangePasswordWithOTPView(APIView):
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+

@@ -56,7 +56,9 @@ class UserRegistrationView(APIView):
             if serializer.is_valid():
                 user = serializer.save()
                 user.set_password(serializer.validated_data["password"])
+                user.is_verified = True
                 user.save()
+                send_welcome_mail(user.email, user.username)
                 # send_otp(serializer.data["email"])
 
                 return Response(

@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "logmeasurements",
     "meals",
     "custommeal",
+    "feedback",
     "caloricintake",
     "django.contrib.admin",
     "django.contrib.auth",
