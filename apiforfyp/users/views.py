@@ -23,19 +23,8 @@ from django.utils import timezone
 # Create your views here.
 
 
-# class UserRegistrationView(generics.CreateAPIView):
-#     serializer_class = UserSerializer
-#     permission_classes = [permissions.AllowAny]
 
-#     def perform_create(self, serializer):
-#         # Hash the password before saving the user
-#         user = serializer.save()
-#         user.set_password(serializer.validated_data["password"])
-#         user.save()
 
-#         return Response(
-#             {"message": "User registered successfully"}, status=status.HTTP_201_CREATED
-#         )
 
 
 class UserRegistrationView(APIView):

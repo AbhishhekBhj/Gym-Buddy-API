@@ -37,7 +37,6 @@ def adminlogin(request):
 
     """
     if request.method == "POST":
-        # Handle POST request for authentication
         username = request.POST.get("username")
         password = request.POST.get("password")
 
@@ -58,7 +57,6 @@ def adminlogin(request):
 
             return HttpResponse("Invalid credentials. Please try again.")
     else:
-        # Render login form for GET request
         return render(request, "login.html")
 
 
@@ -582,3 +580,7 @@ def render_see_allFeedbacks(request):
     feedbacks = FeedBack.objects.all()
 
     return render(request, "see_user_feedbacks.html", {"feedbacks": feedbacks})
+
+
+def render_admin_privacy_violation_page(request):
+    return render(request, "show_admin_cannot_acess.html")

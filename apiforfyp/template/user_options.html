@@ -46,16 +46,24 @@
   <body>
     <div class="options-container">
       <div class="option">
-        <a href="{% url 'get_caloric_intake' id=id %}">See Caloric Intake</a>
+        <a href="{% url 'render_admin_privacy_violation_page'  %}"
+          >See Caloric Intake</a
+        >
       </div>
       <div class="option">
-        <a href="{% url 'get_workout_data' id=id %}">See Workouts</a>
+        <a href="{% url 'render_admin_privacy_violation_page' %}"
+          >See Workouts</a
+        >
       </div>
       <div class="option">
-        <a href="{% url 'get_user_measurements' id=id %}">See Measurements</a>
+        <a href="{% url 'render_admin_privacy_violation_page'  %}"
+          >See Measurements</a
+        >
       </div>
       <div class="option">
-        <a href="{% url 'get_user_reminders' id=id %}">See Reminders</a>
+        <a href="{% url 'render_admin_privacy_violation_page'  %}"
+          >See Reminders</a
+        >
       </div>
     </div>
   </body>

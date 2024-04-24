@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import (render_see_allFeedbacks,
+from .views import (
+    render_see_allFeedbacks,
     get_caloric_intake,
     get_user_measurements,
     get_user_reminders,
@@ -33,12 +34,17 @@ from .views import (render_see_allFeedbacks,
     edit_exercise,
     render_please_login,
     render_subscription_page,
-    
+    render_admin_privacy_violation_page,
 )
 from .graphs import generate_bar_chart
 from users.email import send_special_offers, send_mail_to_all_users
 
 urlpatterns = [
+    path(
+        "render_admin_privacy_violation_page/",
+        render_admin_privacy_violation_page,
+        name="render_admin_privacy_violation_page",
+    ),
     path("edit_exercise/<int:item_id>", edit_exercise, name="edit_exercise"),
     path(
         "render_exercise_edit_page/<int:item_id>",
